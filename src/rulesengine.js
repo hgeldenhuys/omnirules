@@ -1,10 +1,4 @@
 "use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var author_1 = require("./author");
 var cq = require("concurrent-queue");
@@ -130,7 +124,6 @@ function getValueForPath(root, paths) {
     }
 }
 exports.getValueForPath = getValueForPath;
-var typescript_rest_1 = require("typescript-rest");
 var Rule = (function () {
     function Rule(name, code, bom, behaviour) {
         var _this = this;
@@ -144,12 +137,11 @@ var Rule = (function () {
         this.usedValues = {};
         this.path = {};
         this.code = "var result;" + code;
-        this.variables = Rule_1.findUsedBomVariablesInCode(code);
+        this.variables = Rule.findUsedBomVariablesInCode(code);
         this.variables.forEach(function (variable) {
             _this.path[variable] = getPath(variable);
         });
     }
-    Rule_1 = Rule;
     Rule.prototype.execute = function (rule, engine) {
         if (rule.behaviour === RuleBehaviour.Never) {
             this.execute = function (rule, engine) { return undefined; };
@@ -194,14 +186,6 @@ var Rule = (function () {
             return array.lastIndexOf(variable) === index;
         });
     };
-    var Rule_1;
-    __decorate([
-        typescript_rest_1.Path(":id"),
-        typescript_rest_1.GET
-    ], Rule.prototype, "variables", void 0);
-    Rule = Rule_1 = __decorate([
-        typescript_rest_1.Path("Rule")
-    ], Rule);
     return Rule;
 }());
 exports.Rule = Rule;

@@ -5,9 +5,9 @@
     "passes": 44,
     "pending": 0,
     "failures": 0,
-    "start": "2019-04-06T23:06:41.181Z",
-    "end": "2019-04-06T23:06:42.987Z",
-    "duration": 1806,
+    "start": "2019-04-07T18:17:05.844Z",
+    "end": "2019-04-07T18:17:07.789Z",
+    "duration": 1945,
     "testsRegistered": 44,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -19,7 +19,7 @@
     "pendingPercentClass": "danger"
   },
   "suites": {
-    "uuid": "8daba232-faac-471d-be7b-faaefbd818c0",
+    "uuid": "3b0d154f-b6b8-46ed-b14b-5767928df723",
     "title": "",
     "fullFile": "",
     "file": "",
@@ -28,9 +28,9 @@
     "tests": [],
     "suites": [
       {
-        "uuid": "df504757-2521-4d6b-a3a2-a76651546c5a",
+        "uuid": "c87928b7-e116-412d-b09f-770f7dc1dd94",
         "title": "Basics: Inputs",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_basics.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_basics.ts",
         "file": "/test/test_basics.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -48,7 +48,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"Basic\",\n    version: \"1\",\n    inputs: [{ token: \"Name\", dataType: author_1.DataTypeEnum.String }],\n    outputs: [{ token: \"FullName\", calculation: \"Name + ' ' + LastName\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar BOM = decisionObject.generateSampleBOM();\nchai_1.expect(BOM.getValue(\"Name\")).to.equal(\"A string\");",
             "err": {},
             "isRoot": false,
-            "uuid": "1625870d-8bfa-42d2-a612-ca344592e4dd",
+            "uuid": "c5e2cdbb-f298-49ab-8e4b-43c1ae1bfd03",
             "isHook": false,
             "skipped": false
           },
@@ -56,7 +56,7 @@
             "title": "Procedurally add input",
             "fullTitle": "Basics: Inputs Procedurally add input",
             "timedOut": false,
-            "duration": 3,
+            "duration": 0,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -65,7 +65,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"Basic\",\n    version: \"1\",\n    inputs: [{ token: \"Name\", dataType: author_1.DataTypeEnum.String }],\n    outputs: [{ token: \"FullName\", calculation: \"Name + ' ' + LastName\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\ndecisionObject.builder.withInput(\"LastName\").asString(\"Geldenhuys\");\nvar BOM = decisionObject.generateSampleBOM();\nchai_1.expect(BOM.getValue(\"LastName\")).to.equal(\"Geldenhuys\");",
             "err": {},
             "isRoot": false,
-            "uuid": "4e183da2-c6e3-4ca0-a526-beb8beee329d",
+            "uuid": "8cec1454-62d9-49b2-801c-53766aea2333",
             "isHook": false,
             "skipped": false
           },
@@ -73,7 +73,7 @@
             "title": "Deserialize output",
             "fullTitle": "Basics: Inputs Deserialize output",
             "timedOut": false,
-            "duration": 3,
+            "duration": 2,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -82,7 +82,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"Basic\",\n    version: \"1\",\n    inputs: [{ token: \"Name\", dataType: author_1.DataTypeEnum.String, mockValue: \"'Herman'\" }, { token: \"LastName\", dataType: author_1.DataTypeEnum.String, mockValue: \"'Geldenhuys'\" }],\n    outputs: [{ token: \"FullName\", calculation: \"Name + ' ' + LastName\", dataType: author_1.DataTypeEnum.String }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar BOM = decisionObject.generateSampleBOM();\nvar engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run();\nchai_1.expect(BOM.getValue(\"FullName\")).to.equal(\"Herman Geldenhuys\");",
             "err": {},
             "isRoot": false,
-            "uuid": "152c0f1d-e4b4-41fa-ab36-15e9017a65eb",
+            "uuid": "0bbddd67-ec90-4033-9c98-308950d89f0a",
             "isHook": false,
             "skipped": false
           },
@@ -99,7 +99,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"Basic\",\n    version: \"1\",\n    inputs: [{ token: \"Name\", dataType: author_1.DataTypeEnum.String, mockValue: \"'Hendrik'\" }, { token: \"LastName\", dataType: author_1.DataTypeEnum.String, mockValue: \"'Geldenhuys'\" }],\n    outputs: []\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\ndecisionObject.builder.withOutput(\"FullName\").asString().usingCalculation(\"Name + ' ' + LastName\");\nvar BOM = decisionObject.generateSampleBOM();\nvar engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run({ withStats: false });\nchai_1.expect(BOM.getValue(\"FullName\")).to.equal(\"Hendrik Geldenhuys\");",
             "err": {},
             "isRoot": false,
-            "uuid": "388db199-f5e6-43a7-86c5-de91f645beb2",
+            "uuid": "bb225028-539c-4102-bdfe-a2374d54f261",
             "isHook": false,
             "skipped": false
           },
@@ -107,7 +107,7 @@
             "title": "Schema Version Hash",
             "fullTitle": "Basics: Inputs Schema Version Hash",
             "timedOut": false,
-            "duration": 0,
+            "duration": 1,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -116,7 +116,7 @@
             "code": "var ruleSet = new author_1.RuleSet(undefined, {\n    inputs: [],\n    outputs: []\n});\nchai_1.expect(ruleSet.generateSampleBOM().SchemaVersion).to.equals(\"d41d8cd98f00b204e9800998ecf8427e\");",
             "err": {},
             "isRoot": false,
-            "uuid": "d7aba431-15a9-42a0-b7e9-2d6d0c2d7b54",
+            "uuid": "976af126-3d1f-4241-9dd8-f080ad6db07f",
             "isHook": false,
             "skipped": false
           },
@@ -133,7 +133,7 @@
             "code": "var ruleSet = new author_1.RuleSet(undefined, {\n    inputs: [],\n    outputs: [],\n    ruleContext: {\n        name: \"Testing\",\n        enumerations: [{\n                name: \"Colour\",\n                values: [{\n                        value: \"Green\"\n                    }]\n            }]\n    }\n});\nruleSet.builder\n    .withInput(\"AString\").asString(\"ABC\").comma()\n    .withInput(\"ADecimal\").asDecimal(12.3).comma()\n    .withInput(\"AnInteger\").asInteger(123).comma()\n    .withInput(\"ABoolean\").asBoolean(true).comma()\n    .withInput(\"ADate\").asDate().comma()\n    .withInput(\"AnEnum\").asEnum(\"Colour\", \"Green\").comma()\n    .withInput(\"AList\").asList([123, 456]).comma()\n    .withInput(\"AnObject\").asObject({ abc: 123 });\nchai_1.expect(ruleSet.getInput(\"AString\").dataType).to.equals(author_1.DataTypeEnum.String);\nchai_1.expect(ruleSet.getInput(\"ADecimal\").dataType).to.equals(author_1.DataTypeEnum.Decimal);\nchai_1.expect(ruleSet.getInput(\"AnInteger\").dataType).to.equals(author_1.DataTypeEnum.Integer);\nchai_1.expect(ruleSet.getInput(\"ABoolean\").dataType).to.equals(author_1.DataTypeEnum.Boolean);\nchai_1.expect(ruleSet.getInput(\"ADate\").dataType).to.equals(author_1.DataTypeEnum.Date);\nchai_1.expect(ruleSet.getInput(\"AnEnum\").dataType).to.equals(author_1.DataTypeEnum.Enum);\nchai_1.expect(ruleSet.getInput(\"AList\").dataType).to.equals(author_1.DataTypeEnum.List);\nchai_1.expect(ruleSet.getInput(\"AnObject\").dataType).to.equals(author_1.DataTypeEnum.Object);\nruleSet.builder\n    .withInput(\"AnObject\").remove().withInput(\"AString\").remove();\nchai_1.expect(ruleSet.getInput(\"AString\")).to.equals(undefined);\nchai_1.expect(ruleSet.getInput(\"AnObject\")).to.equals(undefined);",
             "err": {},
             "isRoot": false,
-            "uuid": "0f8e0ea2-7518-408b-b040-6c2943fea40e",
+            "uuid": "a2098f80-5184-450f-96c1-a308174fe5bb",
             "isHook": false,
             "skipped": false
           },
@@ -141,7 +141,7 @@
             "title": "Calculating Peekaboo",
             "fullTitle": "Basics: Inputs Calculating Peekaboo",
             "timedOut": false,
-            "duration": 3,
+            "duration": 2,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -150,7 +150,7 @@
             "code": "var ruleSet = new author_1.RuleSet(undefined, {\n    inputs: [],\n    outputs: []\n});\nruleSet.builder\n    .withInput(\"PeekA\").asString(\"BOO\").comma()\n    .withInput(\"options.ABoolean\").asBoolean(true).comma()\n    .withOutput(\"I\").usingCalculation(\"'See You!'\");\nvar decisionObject = new author_1.DecisionObject(undefined, ruleSet);\nvar bom = ruleSet.generateSampleBOM();\nvar engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, bom, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run();\nchai_1.expect(bom.getValue(\"I\")).to.equals(\"See You!\");",
             "err": {},
             "isRoot": false,
-            "uuid": "b7f97589-9e6d-4b8b-be95-a2903207a5a3",
+            "uuid": "e22b261e-55ae-49a9-a132-0c6a6f3c3212",
             "isHook": false,
             "skipped": false
           },
@@ -167,7 +167,7 @@
             "code": "var ruleSet = new author_1.RuleSet(undefined, {\n    inputs: [],\n    outputs: []\n});\nruleSet.builder\n    .withInput(\"PeekA\").asString(\"BOO\").comma()\n    .withInput(\"options.ABoolean\").asBoolean(true).comma()\n    .withOutput(\"I\").usingCalculation(\"'See You!'\");\nvar bom = ruleSet.generateSampleBOM();\nvar engine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());\nengine.run();\nchai_1.expect(bom.getValue(\"I\")).to.equals(\"See You!\");\nruleSet.builder\n    .withOutput(\"I\").ifTrueThat(\"ABoolean\");\nbom = ruleSet.generateSampleBOM();\nengine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());\nengine.run();\nchai_1.expect(bom.getValue(\"I\")).to.equals(\"See You!\");\nbom = ruleSet.generateSampleBOM();\nbom.setValue(\"options.ABoolean\", false);\nengine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());\nengine.run();\nchai_1.expect(bom.getValue(\"I\")).to.equals(undefined);",
             "err": {},
             "isRoot": false,
-            "uuid": "7f5946b6-7a77-40a9-8fb5-b45012e25396",
+            "uuid": "a3789901-7d66-4798-8b83-94d8912fa0a2",
             "isHook": false,
             "skipped": false
           },
@@ -184,35 +184,35 @@
             "code": "var ruleSet = new author_1.RuleSet(undefined, {\n    inputs: [],\n    outputs: [],\n    name: \"Peekaboo\"\n});\nruleSet.builder\n    .withInput(\"PeekA\").asString(\"BOO\").comma()\n    .withInput(\"options.ABoolean\").asBoolean(true).comma()\n    .withOutput(\"I\").usingCalculation(\"'See You!'\")\n    .ifTrueThat(\"ABoolean\").and()\n    .ifTrueThat(\"PeekA==='BOO'\");\nvar bom = ruleSet.generateSampleBOM();\nvar engine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());\nengine.run();\nchai_1.expect(bom.getValue(\"I\")).to.equals(\"See You!\");\nruleSet.builder\n    .withOutput(\"I\");\nbom = ruleSet.generateSampleBOM();\nengine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());\nengine.run();\nchai_1.expect(bom.getValue(\"I\")).to.equals(\"See You!\");\nbom = ruleSet.generateSampleBOM();\nbom.setValue(\"options.ABoolean\", false);\nengine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());\nengine.run({ withStats: true });\nchai_1.expect(bom.getValue(\"I\")).to.equals(undefined);\nchai_1.expect(bom.getValue(\"engine.Peekaboo.conditions.I_1_ABooleanIsTrue\")).to.equals(false);\nchai_1.expect(bom.getValue(\"engine.Peekaboo.conditions.I_2_PeekAIsEqualTo_BOO_IsTrue\")).to.equals(true);",
             "err": {},
             "isRoot": false,
-            "uuid": "929d94d0-32c9-4ecc-b922-d8873c43819c",
+            "uuid": "ea87a855-205a-4dfe-b325-78ecb4318b22",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "1625870d-8bfa-42d2-a612-ca344592e4dd",
-          "4e183da2-c6e3-4ca0-a526-beb8beee329d",
-          "152c0f1d-e4b4-41fa-ab36-15e9017a65eb",
-          "388db199-f5e6-43a7-86c5-de91f645beb2",
-          "d7aba431-15a9-42a0-b7e9-2d6d0c2d7b54",
-          "0f8e0ea2-7518-408b-b040-6c2943fea40e",
-          "b7f97589-9e6d-4b8b-be95-a2903207a5a3",
-          "7f5946b6-7a77-40a9-8fb5-b45012e25396",
-          "929d94d0-32c9-4ecc-b922-d8873c43819c"
+          "c5e2cdbb-f298-49ab-8e4b-43c1ae1bfd03",
+          "8cec1454-62d9-49b2-801c-53766aea2333",
+          "0bbddd67-ec90-4033-9c98-308950d89f0a",
+          "bb225028-539c-4102-bdfe-a2374d54f261",
+          "976af126-3d1f-4241-9dd8-f080ad6db07f",
+          "a2098f80-5184-450f-96c1-a308174fe5bb",
+          "e22b261e-55ae-49a9-a132-0c6a6f3c3212",
+          "a3789901-7d66-4798-8b83-94d8912fa0a2",
+          "ea87a855-205a-4dfe-b325-78ecb4318b22"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 26,
+        "duration": 22,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "194a12a0-a53f-4dc0-84d4-c723e70df7ff",
+        "uuid": "c7d306e0-c977-4627-a23d-7012ed8f5636",
         "title": "Retirement: DecisionObject",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_decisionobject.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_decisionobject.ts",
         "file": "/test/test_decisionobject.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -221,7 +221,7 @@
             "title": "10 years to go if retirement age is 60",
             "fullTitle": "Retirement: DecisionObject 10 years to go if retirement age is 60",
             "timedOut": false,
-            "duration": 3,
+            "duration": 2,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -230,7 +230,7 @@
             "code": "BOM = { Age: 50, AgeToRetirement: RETIREMENT_AGE };\nengine.reset(BOM).run();\nvar result = BOM[setup_decisionobject_1.yearsToGo.relativePath];\nchai_1.expect(result).to.equal(10);",
             "err": {},
             "isRoot": false,
-            "uuid": "60d86fcc-b80d-474c-a010-0104769c0070",
+            "uuid": "5440355b-5ed7-4fa1-a026-67366c7a508f",
             "isHook": false,
             "skipped": false
           },
@@ -247,28 +247,28 @@
             "code": "BOM = { Age: 61, AgeToRetirement: RETIREMENT_AGE };\nengine.reset(BOM).run({ withStats: true });\nvar result = BOM[setup_decisionobject_1.canRetire.relativePath];\nchai_1.expect(result).to.equal(true);",
             "err": {},
             "isRoot": false,
-            "uuid": "2d116f61-640f-4b5b-b819-df43c03d3946",
+            "uuid": "00ec002e-8cf2-46cf-8c57-43aab033f28d",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "60d86fcc-b80d-474c-a010-0104769c0070",
-          "2d116f61-640f-4b5b-b819-df43c03d3946"
+          "5440355b-5ed7-4fa1-a026-67366c7a508f",
+          "00ec002e-8cf2-46cf-8c57-43aab033f28d"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 3,
+        "duration": 2,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "dd0b404a-d2f3-4b29-ae21-73f3e863bef4",
+        "uuid": "1adb48f6-682d-4999-95b9-f06955b2565d",
         "title": "Eligibility: DecisionTable",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_decisiontables.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_decisiontables.ts",
         "file": "/test/test_decisiontables.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -286,7 +286,7 @@
             "code": "BOM = { Age: 11, Gender: \"Female\" };\nengine.reset(BOM).run();\nvar result = BOM[setup_decisiontable_1.eligibleOutput.relativePath];\nchai_1.expect(result).to.equal(false);",
             "err": {},
             "isRoot": false,
-            "uuid": "85913078-3f7f-4df9-9498-5d191499bfb3",
+            "uuid": "1908665b-8907-4355-9cf6-20f39853a11f",
             "isHook": false,
             "skipped": false
           },
@@ -303,7 +303,7 @@
             "code": "BOM = { Age: 13, Gender: \"Male\" };\nengine.reset(BOM).run();\nvar result = BOM[setup_decisiontable_1.eligibleOutput.relativePath];\nchai_1.expect(result).to.equal(false);",
             "err": {},
             "isRoot": false,
-            "uuid": "83e4618c-a3a8-4cf7-831c-f00af2ea25d3",
+            "uuid": "7ef0fe4a-010a-4e7c-85de-8846122ca471",
             "isHook": false,
             "skipped": false
           },
@@ -320,7 +320,7 @@
             "code": "BOM = { Age: 18, Gender: \"Female\" };\nengine.reset(BOM).run();\nvar result = BOM[setup_decisiontable_1.eligibleOutput.token];\nchai_1.expect(result).to.equal(true);",
             "err": {},
             "isRoot": false,
-            "uuid": "1a82a6e0-ff8b-46cc-b0ce-3c206a43b1bb",
+            "uuid": "11b60855-d4ce-43c9-b2c1-43f30580bba1",
             "isHook": false,
             "skipped": false
           },
@@ -337,7 +337,7 @@
             "code": "BOM = { Age: 18, Gender: \"Male\" };\nengine.reset(BOM).run();\nvar result = BOM[setup_decisiontable_1.eligibleOutput.relativePath];\nchai_1.expect(result).to.equal(false);",
             "err": {},
             "isRoot": false,
-            "uuid": "4ff0f162-307a-4734-8b02-62a7828af0fb",
+            "uuid": "37469555-a807-421c-9a56-318daef88b49",
             "isHook": false,
             "skipped": false
           },
@@ -354,7 +354,7 @@
             "code": "BOM = { Age: 21, Gender: \"Male\" };\nengine.reset(BOM).run();\nvar result = BOM[setup_decisiontable_1.eligibleOutput.relativePath];\nchai_1.expect(result).to.equal(true);",
             "err": {},
             "isRoot": false,
-            "uuid": "dea6f289-1e3c-429f-a889-bd939480cbd8",
+            "uuid": "b2a80a4b-bea6-4ebd-981e-e5d7e6855c7f",
             "isHook": false,
             "skipped": false
           },
@@ -371,19 +371,19 @@
             "code": "var bom = { Age: 18, Gender: \"Unknown\" };\nengine.reset(bom).run();\nvar result = bom[setup_decisiontable_1.eligibleOutput.relativePath];\nchai_1.expect(result).to.equal(false);",
             "err": {},
             "isRoot": false,
-            "uuid": "692447a2-8c77-4c04-b3ca-355f07622248",
+            "uuid": "a3dce365-c747-43af-b160-202b17e707f2",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "85913078-3f7f-4df9-9498-5d191499bfb3",
-          "83e4618c-a3a8-4cf7-831c-f00af2ea25d3",
-          "1a82a6e0-ff8b-46cc-b0ce-3c206a43b1bb",
-          "4ff0f162-307a-4734-8b02-62a7828af0fb",
-          "dea6f289-1e3c-429f-a889-bd939480cbd8",
-          "692447a2-8c77-4c04-b3ca-355f07622248"
+          "1908665b-8907-4355-9cf6-20f39853a11f",
+          "7ef0fe4a-010a-4e7c-85de-8846122ca471",
+          "11b60855-d4ce-43c9-b2c1-43f30580bba1",
+          "37469555-a807-421c-9a56-318daef88b49",
+          "b2a80a4b-bea6-4ebd-981e-e5d7e6855c7f",
+          "a3dce365-c747-43af-b160-202b17e707f2"
         ],
         "failures": [],
         "pending": [],
@@ -394,9 +394,9 @@
         "_timeout": 2000
       },
       {
-        "uuid": "f654a89a-2cb7-4876-9140-3d6227a95114",
+        "uuid": "4727783d-ead2-4375-9aad-488ca1a498f1",
         "title": "DecisionTables: Russian Nesting Dolls",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_decisiontables.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_decisiontables.ts",
         "file": "/test/test_decisiontables.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -405,7 +405,7 @@
             "title": "Small Doll (1 level)",
             "fullTitle": "DecisionTables: Russian Nesting Dolls Small Doll (1 level)",
             "timedOut": false,
-            "duration": 11,
+            "duration": 9,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -414,7 +414,7 @@
             "code": "BOM = { StartWith: 0, Size: \"Small\", DollsInsideAndIncludingMe: undefined };\nsmallTable = new author_1.MultiAxisTable(undefined, small);\nvar engine = new rulesengine_1.Rulesengine(smallTable.getRules().rules, BOM, smallTable.name, smallTable.version, smallTable.schemaVersion(), smallTable.getInputNames());\nengine.run();\nvar result = BOM.DollsInsideAndIncludingMe;\nchai_1.expect(result).to.equal(1);",
             "err": {},
             "isRoot": false,
-            "uuid": "214d8e33-9465-4339-bda0-0c8f1c19107f",
+            "uuid": "fefc3d2f-38d5-4360-b5b3-d0f0afbbaebd",
             "isHook": false,
             "skipped": false
           },
@@ -431,7 +431,7 @@
             "code": "BOM = { StartWith: 0, Size: \"Big\" };\nmiddle.outputs.push({\n    decisionObject: small,\n    inputMappings: [{ To: \"StartWith\", From: \"StartWith\" }, { From: \"Size\", To: \"Size\" }],\n    token: \"SmallDoll\",\n    name: \"SmallDoll\",\n    relativePath: \"SmallDoll\",\n    conditions: [],\n    ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,\n    mockValue: undefined,\n    definition: \"\",\n    rawValue: true,\n    calculation: \"StartWith + 1\",\n    dataType: author_1.DataTypeEnum.Object\n});\nmiddle.outputs[0].calculation = \"SmallDoll.DollsInsideAndIncludingMe + 1\";",
             "err": {},
             "isRoot": false,
-            "uuid": "c732338e-3427-4f95-bdc8-caebec7089a5",
+            "uuid": "ea7398e6-6169-4f86-a160-2fef5799b698",
             "isHook": false,
             "skipped": false
           },
@@ -448,7 +448,7 @@
             "code": "big.outputs.push({\n    decisionObject: middle,\n    inputMappings: [{ To: \"StartWith\", From: \"StartWith\" }, { From: \"Size\", To: \"Size\" }],\n    token: \"MediumDoll\",\n    name: \"MediumDollName\",\n    relativePath: \"MediumDollPath\",\n    conditions: [],\n    ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,\n    mockValue: undefined,\n    definition: \"\",\n    rawValue: true,\n    calculation: \"StartWith + 1\",\n    dataType: author_1.DataTypeEnum.Object\n});\nbig.outputs[0].calculation = \"MediumDoll.DollsInsideAndIncludingMe + 1\";",
             "err": {},
             "isRoot": false,
-            "uuid": "43c81779-a6e4-4c9b-8595-6fe26d0e3fc1",
+            "uuid": "d0820c3b-3b44-46f2-a183-b6db5515b496",
             "isHook": false,
             "skipped": false
           },
@@ -456,7 +456,7 @@
             "title": "Add Big Doll",
             "fullTitle": "DecisionTables: Russian Nesting Dolls Add Big Doll",
             "timedOut": false,
-            "duration": 22,
+            "duration": 20,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -465,7 +465,7 @@
             "code": "middleTable = new author_1.MultiAxisTable(undefined, middle);\nvar sampleBOM = middleTable.generateSampleBOM(true);\nvar engine = new rulesengine_1.Rulesengine(middleTable.getRules().rules, sampleBOM, middleTable.name, middleTable.version, middleTable.schemaVersion(), middleTable.getInputNames());\nengine.run();\nchai_1.expect(sampleBOM.SmallDoll.DollsInsideAndIncludingMe).to.equal(2);\nbigTable = new author_1.MultiAxisTable(undefined, big);",
             "err": {},
             "isRoot": false,
-            "uuid": "a2e17603-fa6c-41f4-9ff9-12712e9efa07",
+            "uuid": "33c9e5c6-8758-4059-bfb1-dce6ab98b246",
             "isHook": false,
             "skipped": false
           },
@@ -473,7 +473,7 @@
             "title": "Unpack the dolls",
             "fullTitle": "DecisionTables: Russian Nesting Dolls Unpack the dolls",
             "timedOut": false,
-            "duration": 30,
+            "duration": 28,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -482,31 +482,31 @@
             "code": "var engine = new rulesengine_1.Rulesengine(bigTable.getRules().rules, BOM, bigTable.name, bigTable.version, bigTable.schemaVersion(), bigTable.getInputNames());\nengine.run({ withStats: true });\nvar result = BOM.DollsInsideAndIncludingMe;\nchai_1.expect(result).to.equal(3);",
             "err": {},
             "isRoot": false,
-            "uuid": "c673d7bd-5b81-40a2-997a-9bbbaa2f63a4",
+            "uuid": "55f2902a-e17e-4138-b14f-612c23cbeb2a",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "214d8e33-9465-4339-bda0-0c8f1c19107f",
-          "c732338e-3427-4f95-bdc8-caebec7089a5",
-          "43c81779-a6e4-4c9b-8595-6fe26d0e3fc1",
-          "a2e17603-fa6c-41f4-9ff9-12712e9efa07",
-          "c673d7bd-5b81-40a2-997a-9bbbaa2f63a4"
+          "fefc3d2f-38d5-4360-b5b3-d0f0afbbaebd",
+          "ea7398e6-6169-4f86-a160-2fef5799b698",
+          "d0820c3b-3b44-46f2-a183-b6db5515b496",
+          "33c9e5c6-8758-4059-bfb1-dce6ab98b246",
+          "55f2902a-e17e-4138-b14f-612c23cbeb2a"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 63,
+        "duration": 57,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "cc878d03-e0fc-482e-a61c-db7ead451b04",
+        "uuid": "9d29fee9-8bea-4147-8853-11ea5d4c54c0",
         "title": "Single-Axis Table",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_decisiontables.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_decisiontables.ts",
         "file": "/test/test_decisiontables.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -515,7 +515,7 @@
             "title": "Vertical Flight",
             "fullTitle": "Single-Axis Table Vertical Flight",
             "timedOut": false,
-            "duration": 10,
+            "duration": 9,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -524,27 +524,27 @@
             "code": "var vTable = new author_1.SingleAxisTable(undefined, {\n    entries: [\n        {\n            name: \"\",\n            outputs: [{\n                    token: \"SeatUpgrade\",\n                    calculation: \"'Approved'\"\n                }, {\n                    token: \"Points\",\n                    calculation: \"100\"\n                }],\n            conditions: [{\n                    token: \"Level\",\n                    expression: \"'Executive'\",\n                    conditionType: author_1.ConditionTypeEnum.Boolean\n                }, {\n                    token: \"FlightStatus\",\n                    expression: \"'International'\",\n                    conditionType: author_1.ConditionTypeEnum.Boolean\n                }]\n        },\n        {\n            name: \"\",\n            outputs: [{\n                    token: \"SeatUpgrade\",\n                    calculation: \"'Not Approved'\"\n                }, {\n                    token: \"Points\",\n                    calculation: \"50\"\n                }],\n            conditions: [{\n                    token: \"Level\",\n                    expression: \"'Manager'\",\n                    conditionType: author_1.ConditionTypeEnum.Boolean\n                }, {\n                    token: \"FlightStatus\",\n                    expression: \"'International'\",\n                    conditionType: author_1.ConditionTypeEnum.Boolean\n                }]\n        }\n    ],\n    version: \"1\",\n    ruleContext: {\n        name: \"Testing\",\n        enumerations: [{\n                name: \"Level\",\n                values: [{\n                        value: \"Executive\"\n                    }, {\n                        value: \"Manager\"\n                    }]\n            }, {\n                name: \"FlightStatus\",\n                values: [{\n                        value: \"International\"\n                    }, {\n                        value: \"Domestic\"\n                    }]\n            }]\n    },\n    name: \"VTable\",\n    inputs: [{\n            token: \"Level\",\n            dataType: author_1.DataTypeEnum.Enum,\n            enumerationSet: \"Level\",\n            mockValue: \"'Executive'\"\n        }, {\n            token: \"FlightStatus\",\n            dataType: author_1.DataTypeEnum.Enum,\n            enumerationSet: \"FlightStatus\",\n            mockValue: \"'International'\"\n        }],\n    outputs: [{\n            token: \"SeatUpgrade\"\n        }, {\n            token: \"Points\"\n        }],\n    parentName: \"\",\n    decisionObjectType: author_1.DecisionObjectType.SingleAxisTable,\n    purpose: \"\"\n});\nvar sampleBOM = vTable.generateSampleBOM(true);\nvar engine = new rulesengine_1.Rulesengine(vTable.getRules().rules, sampleBOM, vTable.name, vTable.version, vTable.schemaVersion(), vTable.getInputNames());\nengine.run({ withStats: true });\nchai_1.expect(sampleBOM.getValue(\"SeatUpgrade\")).to.equal(\"Approved\");\nvTable.getInput(\"Level\").mockValue = \"'Manager'\";\nsampleBOM = vTable.generateSampleBOM(true);\nengine.reset(sampleBOM).run({ withStats: true });\nchai_1.expect(sampleBOM.getValue(\"SeatUpgrade\")).to.equal(\"Not Approved\");",
             "err": {},
             "isRoot": false,
-            "uuid": "6ee3f359-1abb-4c62-a82a-327f255f996c",
+            "uuid": "8acfb03a-c9ac-48f1-9479-78e4ef6971bd",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "6ee3f359-1abb-4c62-a82a-327f255f996c"
+          "8acfb03a-c9ac-48f1-9479-78e4ef6971bd"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 10,
+        "duration": 9,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "44e5a3ce-446a-46c9-b0c2-037bfe251b1b",
+        "uuid": "3a6a5a88-1288-4005-8c91-66fd343904bf",
         "title": "Multi Axis Table Defaults",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_decisiontables.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_decisiontables.ts",
         "file": "/test/test_decisiontables.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -553,7 +553,7 @@
             "title": "4 Defaults on Table, Row, Column and cell",
             "fullTitle": "Multi Axis Table Defaults 4 Defaults on Table, Row, Column and cell",
             "timedOut": false,
-            "duration": 28,
+            "duration": 23,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -562,27 +562,27 @@
             "code": "var elements = new author_1.MultiAxisTable(undefined, {\n    name: \"Defaults\",\n    version: \"0.1-in-house\",\n    purpose: \"All Purpose\",\n    decisionObjectType: author_1.DecisionObjectType.MultiAxisTable,\n    ruleContext: {\n        name: \"Default\",\n        enumerations: []\n    },\n    inputs: [],\n    outputs: [\n        {\n            token: \"Earth\",\n            dataType: author_1.DataTypeEnum.String,\n            mockValue: \"'EARTH'\",\n            calculation: \"'Earth is read from the Table'\"\n        },\n        {\n            token: \"Air\",\n            dataType: author_1.DataTypeEnum.String,\n            mockValue: \"'AIR'\",\n            calculation: \"'Table has Air'\"\n        },\n        {\n            token: \"Fire\",\n            dataType: author_1.DataTypeEnum.String,\n            mockValue: \"'FIRE'\",\n            calculation: \"'Table has Fire'\"\n        },\n        {\n            token: \"Water\",\n            dataType: author_1.DataTypeEnum.String,\n            mockValue: \"'WATER'\",\n            calculation: \"'Table has Water'\"\n        }\n    ],\n    columns: [\n        {\n            name: \"AlwaysTrue\",\n            conditions: [],\n            outputs: [\n                {\n                    token: \"Fire\",\n                    dataType: author_1.DataTypeEnum.String,\n                    mockValue: \"'FIRE'\",\n                    calculation: \"'Fire is read from Column'\"\n                }\n            ]\n        }\n    ],\n    rows: [\n        {\n            name: \"AlwaysTrue\",\n            conditions: [],\n            outputs: [{\n                    token: \"Air\",\n                    dataType: author_1.DataTypeEnum.String,\n                    mockValue: \"'AIR'\",\n                    calculation: \"'Air is read from Row'\"\n                }]\n        }\n    ],\n    cells: [{\n            columnNumber: 1,\n            rowNumber: 1,\n            outputs: [\n                {\n                    token: \"Water\",\n                    dataType: author_1.DataTypeEnum.String,\n                    mockValue: \"'WATER'\",\n                    calculation: \"'Water is read from Cell'\"\n                }\n            ]\n        }]\n});\nvar BOM = elements.generateSampleBOM();\nvar engine = new rulesengine_1.Rulesengine(elements.getRules().rules, BOM, elements.name, elements.version, elements.schemaVersion(), elements.getInputNames());\nengine.run({ withStats: true });\nchai_1.expect(BOM.getValue(\"Earth\")).to.equal(\"Earth is read from the Table\");\nchai_1.expect(BOM.getValue(\"Air\")).to.equal(\"Air is read from Row\");\nchai_1.expect(BOM.getValue(\"Fire\")).to.equal(\"Fire is read from Column\");\nchai_1.expect(BOM.getValue(\"Water\")).to.equal(\"Water is read from Cell\");",
             "err": {},
             "isRoot": false,
-            "uuid": "bdd52d77-2667-47ad-8fe9-e52874618e31",
+            "uuid": "e0af97f1-bab5-4d44-8d59-acd9d812042d",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "bdd52d77-2667-47ad-8fe9-e52874618e31"
+          "e0af97f1-bab5-4d44-8d59-acd9d812042d"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 28,
+        "duration": 23,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "aba0b24b-4e16-405a-a5b0-f303a82b486d",
+        "uuid": "e7b499db-7f61-4766-9b2b-14d8ea5f72b9",
         "title": "Exceptions",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_exceptions.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_exceptions.ts",
         "file": "/test/test_exceptions.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -600,14 +600,14 @@
             "code": "var decisionObjectStructure = {\n    name: \"Basic\",\n    version: '1',\n    inputs: [],\n    outputs: [{ token: \"Calculation1\", calculation: \"Calculation2\", dataType: author_1.DataTypeEnum.String }, { token: \"Calculation2\", calculation: \"Calculation1\", dataType: author_1.DataTypeEnum.String }]\n};\nvar decisionObject = new author_1.DecisionObject(null, decisionObjectStructure);\ntry {\n    decisionObject.getRules();\n}\ncatch (error) {\n    chai_1.expect(error.toString()).contains(\"[RULE01]\");\n}",
             "err": {},
             "isRoot": false,
-            "uuid": "cf1e4162-c12b-4630-82df-5c9021c8ec60",
+            "uuid": "d54c094b-51b1-4f3b-b970-0e785bb50215",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "cf1e4162-c12b-4630-82df-5c9021c8ec60"
+          "d54c094b-51b1-4f3b-b970-0e785bb50215"
         ],
         "failures": [],
         "pending": [],
@@ -618,9 +618,9 @@
         "_timeout": 2000
       },
       {
-        "uuid": "35fe38a2-ca75-46a0-83d7-0ec383c9d99b",
+        "uuid": "b96d854b-6537-40b2-8ece-5ddbc6aa00de",
         "title": "Map Functions: Map Run",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_mapfunctions.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_mapfunctions.ts",
         "file": "/test/test_mapfunctions.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -629,7 +629,7 @@
             "title": "Map without path",
             "fullTitle": "Map Functions: Map Run Map without path",
             "timedOut": false,
-            "duration": 2,
+            "duration": 1,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -638,7 +638,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"MapRun\",\n    version: \"1\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [\n    {\n        Name: \"Brand A\",\n        BrandIndex: 1\n    },\n    {\n        Name: \"Brand B\",\n        BrandIndex: 2\n    },\n    {\n        Name: \"Brand C\",\n        BrandIndex: 3\n    }\n];\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"MapRun\", \"1.0.0\"), newBomArray = engine.mapRun(bomArray, undefined, { withStats: true });\nchai_1.expect(newBomArray.length).to.equal(bomArray.length, \"Map Run didn't product the correct length of \" + bomArray.length + \" but got \" + newBomArray.length);\nchai_1.expect(newBomArray[0].BrandPriority).to.equal(2, \"Map Run didn't detect BrandPriority in \" + JSON.stringify(newBomArray[0]));",
             "err": {},
             "isRoot": false,
-            "uuid": "8c6a616c-1acb-43de-aae7-9c0d249287b7",
+            "uuid": "4a0d05a7-c8d8-4333-8997-a59adde1356e",
             "isHook": false,
             "skipped": false
           },
@@ -655,7 +655,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"MapRun\",\n    version: \"2\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [\n    {\n        Name: \"Brand A\",\n        BrandIndex: 1\n    },\n    {\n        Name: \"Brand B\",\n        BrandIndex: 2\n    },\n    {\n        Name: \"Brand C\",\n        BrandIndex: 3\n    }\n];\nconsole.log(JSON.stringify(decisionObject.getRules(), null, 2));\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"MapRun\", \"2.0.0\");\nvar newBomArray = engine.mapRun(bomArray, \"bom.BrandPriority\");\nchai_1.expect(newBomArray.length).to.equal(bomArray.length, \"Map Run didn't product the correct length of \" + bomArray.length + \" but got \" + newBomArray.length);\nchai_1.expect(newBomArray[0]).to.equal(2, \"Map Run didn't detect value 0 in \" + JSON.stringify(newBomArray));",
             "err": {},
             "isRoot": false,
-            "uuid": "a380d32b-b0aa-41ee-a0b1-dfb09205ec04",
+            "uuid": "732dac08-4969-4ea0-959c-edaf56a872db",
             "isHook": false,
             "skipped": false
           },
@@ -663,7 +663,7 @@
             "title": "Filter without path",
             "fullTitle": "Map Functions: Map Run Filter without path",
             "timedOut": false,
-            "duration": 1,
+            "duration": 2,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -672,7 +672,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"FilterRun\",\n    version: \"2\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }, { token: \"Odd\", calculation: \"BrandIndex % 2 === 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [\n    {\n        Name: \"Brand A\",\n        BrandIndex: 1\n    },\n    {\n        Name: \"Brand B\",\n        BrandIndex: 2\n    },\n    {\n        Name: \"Brand C\",\n        BrandIndex: 3\n    }\n];\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"FilterRun\", \"2.0.0\");\nvar newBomArray = engine.filterRun(bomArray, \"bom.Odd === true\");\nchai_1.expect(newBomArray.length).to.equal(2, \"Filter Run didn't product the correct length of 2 but got \" + newBomArray.length);\nchai_1.expect(newBomArray[1].BrandPriority).to.equal(4, \"Filter Run didn't detect value 1.BrandPriority in \" + JSON.stringify(newBomArray));",
             "err": {},
             "isRoot": false,
-            "uuid": "c9ec1d30-f25f-4e45-aaaf-77aa693672b2",
+            "uuid": "84319d7a-ac8d-4706-8873-0f49cdae13dd",
             "isHook": false,
             "skipped": false
           },
@@ -689,17 +689,17 @@
             "code": "var decisionObjectStructure = {\n    name: \"FilterRun\",\n    version: \"2\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }, { token: \"Odd\", calculation: \"BrandIndex % 2 === 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [\n    {\n        Name: \"Brand A\",\n        BrandIndex: 1\n    },\n    {\n        Name: \"Brand B\",\n        BrandIndex: 2\n    },\n    {\n        Name: \"Brand C\",\n        BrandIndex: 3\n    }\n];\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"FilterRun\", \"2.0.0\");\nvar newBomArray = engine.filterRun(bomArray, \"bom.Odd === true\", \"bom.BrandPriority\");\nchai_1.expect(newBomArray.length).to.equal(2, \"Filter Run didn't product the correct length of 2 but got \" + newBomArray.length);\nchai_1.expect(newBomArray[1]).to.equal(4, \"Filter Run didn't detect value 1 in \" + JSON.stringify(newBomArray));",
             "err": {},
             "isRoot": false,
-            "uuid": "b9b75c2b-5b7b-4129-90a3-7d519e683dbb",
+            "uuid": "c438b907-7617-441f-961f-aa164940f39f",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "8c6a616c-1acb-43de-aae7-9c0d249287b7",
-          "a380d32b-b0aa-41ee-a0b1-dfb09205ec04",
-          "c9ec1d30-f25f-4e45-aaaf-77aa693672b2",
-          "b9b75c2b-5b7b-4129-90a3-7d519e683dbb"
+          "4a0d05a7-c8d8-4333-8997-a59adde1356e",
+          "732dac08-4969-4ea0-959c-edaf56a872db",
+          "84319d7a-ac8d-4706-8873-0f49cdae13dd",
+          "c438b907-7617-441f-961f-aa164940f39f"
         ],
         "failures": [],
         "pending": [],
@@ -710,9 +710,9 @@
         "_timeout": 2000
       },
       {
-        "uuid": "98a28a21-b020-4707-9f5b-b3ed2999d067",
+        "uuid": "75d1f2d9-7f83-43cf-8524-0ad18d16d620",
         "title": "Performance",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_performance.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_performance.ts",
         "file": "/test/test_performance.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -721,7 +721,7 @@
             "title": "1000 records getRules",
             "fullTitle": "Performance 1000 records getRules",
             "timedOut": false,
-            "duration": 16,
+            "duration": 13,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -730,7 +730,7 @@
             "code": "var ruleSet = new author_1.RuleSet(undefined, {\n    inputs: [],\n    outputs: [],\n    name: \"Peekaboo\"\n});\nruleSet.builder\n    .withInput(\"Name\").asString(\"Herman\").thenNext()\n    .withInput(\"LastName\").asString(\"Geldenhuys\").thenNext()\n    .withInput(\"Age\").asInteger(33).thenNext()\n    .withOutput(\"FullName\").asString().withCalculation(\"Name + ' ' + LastName\").thenNext()\n    .withOutput(\"Summary\").withCalculation(\"FullName + ' is ' + Age + ' years old.'\");\nvar BOM = { Name: \"Herman\", LastName: \"Geldenhuys\", Age: 33, Summary: undefined };\nvar engine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, BOM, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());\nvar start = new Date();\nfor (var iterator = 0; iterator < 1000; iterator++) {\n    BOM = { Name: \"Herman\", LastName: \"Geldenhuys\", Age: iterator, Summary: undefined };\n    engine.reset(BOM).run();\n}\nvar took = (new Date()).getTime() - start.getTime();\nconsole.log(\"took: \" + took);\nchai_1.expect(BOM.Summary).to.equal(\"Herman Geldenhuys is 999 years old.\");\nchai_1.expect(took).to.lessThan(40);",
             "err": {},
             "isRoot": false,
-            "uuid": "dc02ffe9-25e1-44e5-a946-a47ec403e093",
+            "uuid": "2a6616a1-77c2-4bbe-a8ba-65a7043f9181",
             "isHook": false,
             "skipped": false
           },
@@ -738,7 +738,7 @@
             "title": "Performance: 100 000 - Map without path",
             "fullTitle": "Performance Performance: 100 000 - Map without path",
             "timedOut": false,
-            "duration": 225,
+            "duration": 251,
             "state": "passed",
             "speed": "slow",
             "pass": true,
@@ -747,7 +747,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"MapRun\",\n    version: \"1\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [];\nfor (var index = 0; index < 100000; index++) {\n    bomArray.push({\n        Name: \"Brand \" + index,\n        BrandIndex: index\n    });\n}\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"MapRun\", \"1.0.0\"), newBomArray = engine.mapRun(bomArray, undefined, { withStats: true });\nchai_1.expect(newBomArray.length).to.equal(bomArray.length, \"Map Run didn't product the correct length of \" + bomArray.length + \" but got \" + newBomArray.length);\nchai_1.expect(newBomArray[10000].BrandPriority).to.equal(10001, \"Map Run didn't detect BrandPriority in \" + JSON.stringify(newBomArray[0]));",
             "err": {},
             "isRoot": false,
-            "uuid": "9a87d8e3-a4bc-4aea-8cad-74cdc34e20db",
+            "uuid": "c1363c4e-c672-4cc0-b954-0e8954f56db1",
             "isHook": false,
             "skipped": false
           },
@@ -755,7 +755,7 @@
             "title": "Performance: 100 000 - Map without path Using complex model",
             "fullTitle": "Performance Performance: 100 000 - Map without path Using complex model",
             "timedOut": false,
-            "duration": 597,
+            "duration": 650,
             "state": "passed",
             "speed": "slow",
             "pass": true,
@@ -764,7 +764,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"MapRun\",\n    version: \"1\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }, { token: \"Odd\", calculation: \"BrandIndex % 2 === 1\" }, { token: \"Even\", calculation: \"!Odd\" }, { token: \"Complex\", calculation: \"Odd + ':' + Even + ':' + BrandPriority\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [];\nfor (var index = 0; index < 100000; index++) {\n    bomArray.push({\n        Name: \"Brand \" + index,\n        BrandIndex: index\n    });\n}\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"MapRun\", \"1.0.0\"), newBomArray = engine.mapRun(bomArray, undefined, { withStats: true });\nchai_1.expect(newBomArray.length).to.equal(bomArray.length, \"Map Run didn't product the correct length of \" + bomArray.length + \" but got \" + newBomArray.length);\nchai_1.expect(newBomArray[10000].BrandPriority).to.equal(10001, \"Map Run didn't detect BrandPriority in \" + JSON.stringify(newBomArray[0]));",
             "err": {},
             "isRoot": false,
-            "uuid": "015942ad-83c4-40d1-bc0f-a32258885d28",
+            "uuid": "cdec71ff-4225-4d77-97a7-716a4ca040ff",
             "isHook": false,
             "skipped": false
           },
@@ -772,7 +772,7 @@
             "title": "Performance: 100 000 - Map with path",
             "fullTitle": "Performance Performance: 100 000 - Map with path",
             "timedOut": false,
-            "duration": 182,
+            "duration": 234,
             "state": "passed",
             "speed": "slow",
             "pass": true,
@@ -781,7 +781,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"MapRun\",\n    version: \"1\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [];\nfor (var index = 0; index < 100000; index++) {\n    bomArray.push({\n        Name: \"Brand \" + index,\n        BrandIndex: index\n    });\n}\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"MapRun\", \"1.0.0\"), newBomArray = engine.mapRun(bomArray, \"bom.BrandPriority\", { withStats: true });\nchai_1.expect(newBomArray.length).to.equal(bomArray.length, \"Map Run didn't product the correct length of \" + bomArray.length + \" but got \" + newBomArray.length);\nchai_1.expect(newBomArray[10000]).to.equal(10001, \"Map Run didn't detect BrandPriority in \" + JSON.stringify(newBomArray[0]));",
             "err": {},
             "isRoot": false,
-            "uuid": "db7c2eba-9750-4c5a-b07c-1399f0f5e8d9",
+            "uuid": "10a49360-2332-4158-917d-6630e4f0ae8a",
             "isHook": false,
             "skipped": false
           },
@@ -789,7 +789,7 @@
             "title": "Performance: 100 000 - Filter without path",
             "fullTitle": "Performance Performance: 100 000 - Filter without path",
             "timedOut": false,
-            "duration": 308,
+            "duration": 353,
             "state": "passed",
             "speed": "slow",
             "pass": true,
@@ -798,7 +798,7 @@
             "code": "var decisionObjectStructure = {\n    name: \"FilterRun\",\n    version: \"1\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }, { token: \"Odd\", calculation: \"BrandIndex % 2 === 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [];\nfor (var index = 0; index < 100000; index++) {\n    bomArray.push({\n        Name: \"Brand \" + index,\n        BrandIndex: index\n    });\n}\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"FilterRun\", \"1.0.0\"), newBomArray = engine.filterRun(bomArray, \"bom.Odd === true\", undefined, { withStats: true });\nchai_1.expect(newBomArray.length).to.equal(50000, \"Map Run didn't product the correct length of \" + bomArray.length + \" but got \" + newBomArray.length);\nchai_1.expect(newBomArray[10000].BrandPriority).to.equal(20002, \"Map Run didn't detect BrandPriority in \" + JSON.stringify(newBomArray[0]));",
             "err": {},
             "isRoot": false,
-            "uuid": "11be0ae4-e439-4574-95ff-a375e20a1009",
+            "uuid": "45395867-0c55-414a-afcc-375e33a6044e",
             "isHook": false,
             "skipped": false
           },
@@ -806,7 +806,7 @@
             "title": "Performance: 100 000 - Filter with path",
             "fullTitle": "Performance Performance: 100 000 - Filter with path",
             "timedOut": false,
-            "duration": 309,
+            "duration": 299,
             "state": "passed",
             "speed": "slow",
             "pass": true,
@@ -815,32 +815,32 @@
             "code": "var decisionObjectStructure = {\n    name: \"FilterRun\",\n    version: \"2\",\n    inputs: [{ token: \"BrandIndex\", dataType: author_1.DataTypeEnum.Integer }],\n    outputs: [{ token: \"BrandPriority\", calculation: \"BrandIndex + 1\" }, { token: \"Odd\", calculation: \"BrandIndex % 2 === 1\" }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);\nvar bomArray = [];\nfor (var index = 0; index < 100000; index++) {\n    bomArray.push({\n        Name: \"Brand \" + index,\n        BrandIndex: index\n    });\n}\nvar rules = decisionObject.getRules(), engine = new rulesengine_1.Rulesengine(rules.rules, {}, \"FilterRun\", \"2.0.0\"), newBomArray = engine.filterRun(bomArray, \"bom.Odd === true\", \"bom.BrandPriority\", { withStats: true });\nchai_1.expect(newBomArray.length).to.equal(50000, \"Map Run didn't product the correct length of \" + bomArray.length + \" but got \" + newBomArray.length);\nchai_1.expect(newBomArray[10000]).to.equal(20002, \"Map Run didn't detect BrandPriority in \" + JSON.stringify(newBomArray[0]));",
             "err": {},
             "isRoot": false,
-            "uuid": "b44c80c3-adc6-4aec-b8f5-201c4047777e",
+            "uuid": "a9008dc0-3378-4f44-ae31-dd717403714a",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "dc02ffe9-25e1-44e5-a946-a47ec403e093",
-          "9a87d8e3-a4bc-4aea-8cad-74cdc34e20db",
-          "015942ad-83c4-40d1-bc0f-a32258885d28",
-          "db7c2eba-9750-4c5a-b07c-1399f0f5e8d9",
-          "11be0ae4-e439-4574-95ff-a375e20a1009",
-          "b44c80c3-adc6-4aec-b8f5-201c4047777e"
+          "2a6616a1-77c2-4bbe-a8ba-65a7043f9181",
+          "c1363c4e-c672-4cc0-b954-0e8954f56db1",
+          "cdec71ff-4225-4d77-97a7-716a4ca040ff",
+          "10a49360-2332-4158-917d-6630e4f0ae8a",
+          "45395867-0c55-414a-afcc-375e33a6044e",
+          "a9008dc0-3378-4f44-ae31-dd717403714a"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 1637,
+        "duration": 1800,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "0022df83-8677-4e08-b80e-aa44c326efc6",
+        "uuid": "82d86238-d8a9-4962-8a4c-0a844cb1fd9d",
         "title": "Schema: Input Paths",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_schema.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_schema.ts",
         "file": "/test/test_schema.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -858,7 +858,7 @@
             "code": "var decision = {\n    decisionObjectType: author_1.DecisionObjectType.RuleSet,\n    version: \"1\",\n    name: \"Schema\",\n    inputs: [{\n            mockValue: \"'Ransom'\",\n            definition: \"\",\n            relativePath: \"Name\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Name\",\n            name: \"Name\"\n        }],\n    outputs: [{\n            ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,\n            mockValue: undefined,\n            definition: \"\",\n            relativePath: \"Echo.Echo\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Echo\",\n            name: \"Echo\",\n            decisionObject: undefined,\n            rawValue: false,\n            calculation: \"Name + Name\",\n            inputMappings: [],\n            conditions: []\n        }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decision), BOM = decisionObject.generateSampleBOM(), engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run();\nvar result = rulesengine_1.getBOMValue(BOM, \"bom.Name\");\nchai_1.expect(result).to.equal(\"Ransom\");",
             "err": {},
             "isRoot": false,
-            "uuid": "10d345be-f15e-4e10-99a4-af161a366ee2",
+            "uuid": "29228f2c-2f48-433c-aa96-9c573a01c03a",
             "isHook": false,
             "skipped": false
           },
@@ -866,7 +866,7 @@
             "title": "Level 1 Input: Client.Name=Ransom",
             "fullTitle": "Schema: Input Paths Level 1 Input: Client.Name=Ransom",
             "timedOut": false,
-            "duration": 4,
+            "duration": 3,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -875,28 +875,28 @@
             "code": "var decision = {\n    decisionObjectType: author_1.DecisionObjectType.RuleSet,\n    version: \"1\",\n    name: \"Schema\",\n    inputs: [{\n            mockValue: \"'Ransom'\",\n            definition: \"\",\n            relativePath: \"Client.Name\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Name\",\n            name: \"Name\"\n        }],\n    outputs: [{\n            ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,\n            mockValue: undefined,\n            definition: \"\",\n            relativePath: \"Echo.Echo\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Echo\",\n            name: \"Echo\",\n            decisionObject: undefined,\n            rawValue: false,\n            calculation: \"Name + Name\",\n            inputMappings: [],\n            conditions: [{\n                    to: undefined,\n                    includeTo: false,\n                    includeFrom: false,\n                    from: undefined,\n                    expression: \"Name === 'Ransom'\",\n                    conditionType: author_1.ConditionTypeEnum.Boolean,\n                    number: undefined,\n                    token: \"Name is Ransom\"\n                }]\n        }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decision);\nvar BOM = decisionObject.generateSampleBOM();\ndecisionObject = new author_1.DecisionObject(undefined, decision);\nvar engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run({ withStats: true });\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Client.Name\")).to.equal(\"Ransom\");\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Echo.Echo\")).to.equal(\"RansomRansom\");\ndecision.outputs[0].conditions[0].expression = \"Name !== 'Ransom'\";\ndecisionObject = new author_1.DecisionObject(undefined, decision);\nBOM = decisionObject.generateSampleBOM();\nengine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run({ withStats: true });\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Client.Name\")).to.equals(\"Ransom\");\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Echo.Echo\")).to.equals(undefined);",
             "err": {},
             "isRoot": false,
-            "uuid": "cd7b9b68-b23e-4380-97b7-a0db2be8f93f",
+            "uuid": "25b8d054-bbab-4216-90ab-f02012afe870",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "10d345be-f15e-4e10-99a4-af161a366ee2",
-          "cd7b9b68-b23e-4380-97b7-a0db2be8f93f"
+          "29228f2c-2f48-433c-aa96-9c573a01c03a",
+          "25b8d054-bbab-4216-90ab-f02012afe870"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 6,
+        "duration": 5,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "ee210cdf-1c60-4397-a27f-b68a3647026a",
+        "uuid": "16287162-0188-4127-bc44-32825ceb68ad",
         "title": "Conditions: Simple",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_schema.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_schema.ts",
         "file": "/test/test_schema.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -914,7 +914,7 @@
             "code": "var decision = {\n    decisionObjectType: author_1.DecisionObjectType.RuleSet,\n    version: \"1\",\n    name: \"Schema\",\n    inputs: [{\n            mockValue: \"'Ransom'\",\n            definition: \"\",\n            relativePath: \"Client.Name\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Name\",\n            name: \"Name\"\n        }],\n    outputs: [{\n            ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,\n            mockValue: undefined,\n            definition: \"\",\n            relativePath: \"Echo.Echo\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Echo\",\n            name: \"Echo\",\n            decisionObject: undefined,\n            rawValue: false,\n            calculation: \"Name + Name\",\n            inputMappings: [],\n            conditions: [{\n                    to: undefined,\n                    includeTo: false,\n                    includeFrom: false,\n                    from: undefined,\n                    expression: \"Name === 'Ransom'\",\n                    conditionType: author_1.ConditionTypeEnum.Boolean,\n                    number: undefined,\n                    token: \"Name is Ransom\"\n                }]\n        }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decision);\nvar BOM = decisionObject.generateSampleBOM();\ndecisionObject = new author_1.DecisionObject(undefined, decision);\nvar engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run({ withStats: true });\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Client.Name\")).to.equal(\"Ransom\");\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.engine.Schema.conditions.Echo.Echo_1_Name_is_Ransom\")).to.equal(true);\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Echo.Echo\")).to.equal(\"RansomRansom\");",
             "err": {},
             "isRoot": false,
-            "uuid": "8f14789d-73ce-4ba9-ac4b-0bfa7629544e",
+            "uuid": "86a7124f-3ea6-4d57-a063-06401c40548b",
             "isHook": false,
             "skipped": false
           },
@@ -931,15 +931,15 @@
             "code": "var decision = {\n    decisionObjectType: author_1.DecisionObjectType.RuleSet,\n    version: \"1\",\n    name: \"Schema\",\n    inputs: [{\n            mockValue: \"'Ransom'\",\n            definition: \"\",\n            relativePath: \"Client.Name\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Name\",\n            name: \"Name\"\n        }],\n    outputs: [{\n            ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,\n            mockValue: undefined,\n            definition: \"\",\n            relativePath: \"Echo.Echo\",\n            dataType: author_1.DataTypeEnum.String,\n            token: \"Echo\",\n            name: \"Echo\",\n            decisionObject: undefined,\n            rawValue: false,\n            calculation: \"Name + Name\",\n            inputMappings: [],\n            conditions: [{\n                    to: undefined,\n                    includeTo: false,\n                    includeFrom: false,\n                    from: undefined,\n                    expression: \"Name !== 'Ransom'\",\n                    conditionType: author_1.ConditionTypeEnum.Boolean,\n                    number: undefined,\n                    token: \"Name is Ransom\"\n                }]\n        }]\n};\nvar decisionObject = new author_1.DecisionObject(undefined, decision);\nvar BOM = decisionObject.generateSampleBOM();\ndecisionObject = new author_1.DecisionObject(undefined, decision);\nvar engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());\nengine.run({ withStats: true });\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Client.Name\")).to.equal(\"Ransom\");\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.engine.Schema.conditions.Echo.Echo_1_Name_is_Ransom\")).to.equal(false);\nchai_1.expect(rulesengine_1.getBOMValue(BOM, \"bom.Echo.Echo\")).to.equals(undefined);",
             "err": {},
             "isRoot": false,
-            "uuid": "e8fdd11e-832a-4256-90c1-b93960fdd63f",
+            "uuid": "68c691d0-dc99-4ca5-ba05-e97b414e813c",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "8f14789d-73ce-4ba9-ac4b-0bfa7629544e",
-          "e8fdd11e-832a-4256-90c1-b93960fdd63f"
+          "86a7124f-3ea6-4d57-a063-06401c40548b",
+          "68c691d0-dc99-4ca5-ba05-e97b414e813c"
         ],
         "failures": [],
         "pending": [],
@@ -950,9 +950,9 @@
         "_timeout": 2000
       },
       {
-        "uuid": "6194c7a2-0ab1-404e-981d-3ab8980c6b98",
+        "uuid": "0dee330d-8c23-41b8-8ed0-978b1407b5a4",
         "title": "Conditionals: GreaterThan, LessThan, Between, Outside",
-        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/UniversalRules/test/test_schema.ts",
+        "fullFile": "/Users/hgeldenhuys/Documents/GitHub/omnirules/test/test_schema.ts",
         "file": "/test/test_schema.ts",
         "beforeHooks": [],
         "afterHooks": [],
@@ -970,7 +970,7 @@
             "code": "chai_1.expect(BOM.Results.GreaterThan).to.equal(\"6 is greater than Bottom\");",
             "err": {},
             "isRoot": false,
-            "uuid": "277c7de8-e103-40b2-bc7c-d036e7140ce8",
+            "uuid": "1f5ee267-33ce-4ceb-b4b6-5babff8a8735",
             "isHook": false,
             "skipped": false
           },
@@ -987,7 +987,7 @@
             "code": "chai_1.expect(BOM.Results.LessThan).to.equal(\"6 is less than Top\");",
             "err": {},
             "isRoot": false,
-            "uuid": "02c8c9b3-14e9-4d92-abc8-a1502ffd49b6",
+            "uuid": "cec4520d-9bbe-40f6-831d-bef0d189bde9",
             "isHook": false,
             "skipped": false
           },
@@ -1004,7 +1004,7 @@
             "code": "chai_1.expect(BOM.Results.GreaterThanOrEqualTo).to.equal(\"6 is greater than or equal to Bottom\");",
             "err": {},
             "isRoot": false,
-            "uuid": "fb7c07e9-ae1e-4749-a6c3-fc83f96b9521",
+            "uuid": "a76b800b-890d-4608-aa37-7bdee8390451",
             "isHook": false,
             "skipped": false
           },
@@ -1012,7 +1012,7 @@
             "title": "LessThan",
             "fullTitle": "Conditionals: GreaterThan, LessThan, Between, Outside LessThan",
             "timedOut": false,
-            "duration": 1,
+            "duration": 0,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -1021,7 +1021,7 @@
             "code": "chai_1.expect(BOM.Results.LessThanOrEqualTo).to.equal(\"6 is less than or equal to Top\");",
             "err": {},
             "isRoot": false,
-            "uuid": "c588a827-2789-4aab-9722-a8c5bde20723",
+            "uuid": "738145be-50e8-4087-9b10-ad0dc51a1b73",
             "isHook": false,
             "skipped": false
           },
@@ -1038,23 +1038,23 @@
             "code": "chai_1.expect(BOM.Results.Between).to.equal(\"6 is between bom.Number.Bottom and Top\");",
             "err": {},
             "isRoot": false,
-            "uuid": "4c54b926-5e9a-4270-ac45-ddf40672ae24",
+            "uuid": "b746142e-90e2-4a4e-ac24-09257aec2769",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "277c7de8-e103-40b2-bc7c-d036e7140ce8",
-          "02c8c9b3-14e9-4d92-abc8-a1502ffd49b6",
-          "fb7c07e9-ae1e-4749-a6c3-fc83f96b9521",
-          "c588a827-2789-4aab-9722-a8c5bde20723",
-          "4c54b926-5e9a-4270-ac45-ddf40672ae24"
+          "1f5ee267-33ce-4ceb-b4b6-5babff8a8735",
+          "cec4520d-9bbe-40f6-831d-bef0d189bde9",
+          "a76b800b-890d-4608-aa37-7bdee8390451",
+          "738145be-50e8-4087-9b10-ad0dc51a1b73",
+          "b746142e-90e2-4a4e-ac24-09257aec2769"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 1,
+        "duration": 0,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000

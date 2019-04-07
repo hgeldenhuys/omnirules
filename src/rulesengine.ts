@@ -140,13 +140,7 @@ export function getValueForPath(root: {}, paths: string[]) {
     }
 }
 
-import { Path, Accept, GET } from "typescript-rest";
-import { Tags } from "typescript-rest-swagger";
-
-@Path("Rule")
 export class Rule {
-    @Path(":id")
-    @GET
     public variables: string[] = [];
     public usedVariables: string[];
     public valid = false;
@@ -167,7 +161,6 @@ export class Rule {
             return fn(this, engine);
         }
     }
-
     public constructor(public name: string, public code: string, public bom: {}, public behaviour: RuleBehaviour = RuleBehaviour.Normal) {
         this.code = `var result;${code}`;
         this.variables = Rule.findUsedBomVariablesInCode(code);
@@ -175,7 +168,6 @@ export class Rule {
             this.path[variable] = getPath(variable);
         });
     }
-
     public calculate(): Rule {
         this.valid = this.valid || (this.variables.length === 0);
         if (!this.valid || (this.behaviour === RuleBehaviour.Always)) {
