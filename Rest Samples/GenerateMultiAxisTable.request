@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>baseURL</key>
+	<string>http://localhost:3000/generate/multiaxisdecisiontable</string>
+	<key>followRedirect</key>
+	<true/>
+	<key>handleJSONPCallbacks</key>
+	<false/>
+	<key>headers</key>
+	<array/>
+	<key>httpMethod</key>
+	<string>GET</string>
+	<key>jsonpScript</key>
+	<string></string>
+	<key>paramBodyUIChoice</key>
+	<integer>0</integer>
+	<key>parameters</key>
+	<array>
+		<dict>
+			<key>inUse</key>
+			<true/>
+			<key>parameter</key>
+			<string>exportjson</string>
+			<key>value</key>
+			<string>{"inputs":[{"dataType":"DecimalType","token":"Age","label":"Age","relativePath":"Age","guid":"8444249301322681"},{"dataType":"EnumerationType","token":"Gender","label":"Gender","relativePath":"Gender","guid":"8444249301322682"}],"outputs":[{"dataType":"BooleanType","calculation":"undefined","token":"Eligible","relativePath":"Eligible","conditions":[],"label":"false","guid":"7318349394480257"}],"version":"0.2.0.draft","ruleContext":{"name":"noun_Coffee_472911.png","enumerations":[{"name":"DrinkType","values":[{"value":"Mocha"},{"value":"Flatwhite"},{"value":"Americano"},{"value":"Cappuccino"}]},{"name":"Products","values":[{"label":"Mocha","value":"Mocha"},{"label":"Flatwhite","value":"Flatwhite"},{"label":"Americano","value":"Americano"}]},{"name":"Sizes","values":[{"value":"Picollo"},{"value":"Mezo"},{"value":"Grande"}]},{"name":"Gender","values":[{"value":"Male"},{"value":"Female"}]}]},"name":"OfAge","decisionObjectType":"DecisionTable","cells":[{"columnNumber":1,"rowNumber":1,"guid":"1407374883557482","outputs":[]},{"columnNumber":1,"rowNumber":2,"guid":"1407374883557481","outputs":[]},{"columnNumber":2,"rowNumber":1,"guid":"1407374883557484","outputs":[{"dataType":"BooleanType","token":"Eligible","calculation":"true","guid":"12384898975271873","active":true}]},{"columnNumber":2,"rowNumber":2,"guid":"1407374883557483","outputs":[{"dataType":"BooleanType","token":"Eligible","calculation":"false","guid":"12384898975271872","active":true}]},{"columnNumber":3,"rowNumber":1,"guid":"1407374883557882","outputs":[]},{"columnNumber":3,"rowNumber":2,"guid":"1407374883557881","outputs":[]}],"columns":[{"guid":"6755399441059845","outputs":[{"dataType":"BooleanType","token":"Eligible","calculation":"false","guid":"12384898975271865","active":true}],"conditions":[{"expression":"Age &lt; 19","conditionType":"Boolean_Expression","label":"Age &lt; 19","guid":"17169973579351717","index":1}],"name":"Younger than 19","index":1},{"guid":"6755399441059846","outputs":[],"conditions":[{"expression":"(18 &lt; Age) &amp;&amp; (Age &lt; 21)","conditionType":"Boolean_Expression","label":"18 &lt; Age &lt; 21","guid":"17169973579351817","index":1}],"name":"19-20","index":2},{"guid":"6755399441060245","outputs":[{"dataType":"BooleanType","token":"Eligible","calculation":"true","guid":"12384898975271867","active":true}],"conditions":[{"expression":"Age &gt; 20","conditionType":"Boolean_Expression","label":"Age &gt; 20","guid":"17169973579351818","index":1}],"name":"Older than 20","index":3}],"rows":[{"guid":"14073748835536702","outputs":[{"dataType":"BooleanType","token":"Eligible","calculation":"true","guid":"12384898975271869","active":true}],"conditions":[{"expression":"Gender === 'Female'","conditionType":"Boolean_Expression","label":"Gender === 'Female'","guid":"17169973579351819","index":1}],"name":"Women","index":1},{"guid":"14073748835536701","outputs":[],"conditions":[{"expression":"Gender === 'Male'","conditionType":"Boolean_Expression","label":"Gender === 'Male'","guid":"17169973579351820","index":1}],"name":"Men","index":2}]}</string>
+		</dict>
+	</array>
+	<key>parametersType</key>
+	<integer>1</integer>
+	<key>presentBeforeChallenge</key>
+	<false/>
+	<key>stringEncoding</key>
+	<integer>4</integer>
+	<key>usingHTTPBody</key>
+	<false/>
+</dict>
+</plist>

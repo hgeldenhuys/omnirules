@@ -1,0 +1,1 @@
+{"version":3,"file":"generate-java.js","sourceRoot":"","sources":["generate-java.ts"],"names":[],"mappings":";;AAAa,QAAA,yBAAyB,GAAG,UAAC,WAAmB;IACzD,IACI,eAAe,GAAG,29SAAy1S,EAC32S,gBAAgB,GAAG,aAAW,WAAW,smNAqJ/C,CAAC;IACC,OAAO,gBAAgB,CAAC;AAC5B,CAAC,CAAC;AAEW,QAAA,mBAAmB,GAAG,UAAC,WAAmB;IACnD,IACI,gBAAgB,GAAG,aAAW,WAAW,0/IAyG/C,CAAC;IACC,OAAO,gBAAgB,CAAC;AAC5B,CAAC,CAAC"}

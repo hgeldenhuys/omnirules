@@ -1,0 +1,13 @@
+{
+	"definitions": {},
+	"info": {
+		"license": {
+			"name": "Apache-2.0"
+		},
+		"title": "omnirule",
+		"version": "0.0.0"
+	},
+	"paths": {},
+	"swagger": "2.0",
+	"securityDefinitions": {}
+}

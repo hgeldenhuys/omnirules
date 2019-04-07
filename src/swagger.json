@@ -1,0 +1,780 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "OmniRule Authoring Services",
+    "description": "Generate OmniRule RuleSets from Authored JSON definitions",
+    "termsOfService": "https://omnirule.io/terms",
+    "contact": {
+      "name": "Herman Geldenhuys"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "basePath": "/api",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/generate/table/multi-axis": {
+      "post": {
+        "description": "Generate a Multi-Axis Decision Table",
+        "operationId": "multiAxisDecisionTable",
+        "tags": ["Generate Ruleset"],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Multi Axis Decision Table JSON",
+            "in": "body",
+            "description": "Eligibility: A simple implementation of IMultiAxisDecisionTable",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MultiAxisTable"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RuleSet",
+            "schema": {
+              "type": "object",
+              "example": {
+                "rules": [
+                  {
+                    "name": "Rule1",
+                    "code": "Some JS Code",
+                    "behaviour": "Normal"
+                  }
+                ],
+                "Version": "0.0.0.draft",
+                "Id": "RuleSet",
+                "SchemaVersion": "b6f12be0f14ca67608f7fc2f7520a8f2",
+                "error": {}
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/generate/table/single-axis": {
+      "post": {
+        "description": "Generate a Single-Axis Decision Table",
+        "operationId": "SingleAxisDecisionTable",
+        "tags": ["Generate Ruleset"],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Single Axis Decision Table JSON",
+            "in": "body",
+            "description": "tags to filter by",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SingleAxisTable"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RuleSet",
+            "schema": {
+              "type": "object",
+              "example": {
+                "rules": [
+                  {
+                    "name": "Rule1",
+                    "code": "Some JS Code",
+                    "behaviour": "Normal"
+                  }
+                ],
+                "Version": "0.0.0.draft",
+                "Id": "RuleSet",
+                "SchemaVersion": "b6f12be0f14ca67608f7fc2f7520a8f2",
+                "error": {}
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/generate/ruleset": {
+      "post": {
+        "description": "Generate a Ruleset",
+        "operationId": "ruleset",
+        "tags": ["Generate Ruleset"],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Rule Set JSON",
+            "in": "body",
+            "description": "tags to filter by",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RuleSet"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RuleSet",
+            "schema": {
+              "type": "object",
+              "example": {
+                "rules": [
+                  {
+                    "name": "Rule1",
+                    "code": "Some JS Code",
+                    "behaviour": "Normal"
+                  }
+                ],
+                "Version": "0.0.0.draft",
+                "Id": "RuleSet",
+                "SchemaVersion": "b6f12be0f14ca67608f7fc2f7520a8f2",
+                "error": {}
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/load/engine": {
+      "post": {
+        "description": "Load a Rules Engine Artifact",
+        "operationId": "loadEngine",
+        "tags": ["Run Rule Engines"],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Engine",
+            "in": "body",
+            "description": "A rules engine",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RuleArtifact"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Loaded Response",
+            "schema": {
+              "type": "object",
+              "example": {
+                "loaded": true}
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/run/engine": {
+      "post": {
+        "description": "Run a Rules Engine Artifact",
+        "operationId": "runEngine",
+        "tags": ["Run Rule Engines"],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "BOM",
+            "in": "body",
+            "description": "Business Object Model (Schema)",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "example": {
+                "bom": {
+                  "TotalSales": 1000000,
+                  "TotalAssets": 500000,
+                  "AccountReceivable": 10,
+                  "Inventory": 4000,
+                  "AccountsPayable": 15,
+                  "Purchases": 5,
+                  "CostOfGoodsSold": 5000,
+                  "SchemaVersion": "1"
+                },
+                "name": "Activity",
+                "version": "2.1.0.draft"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business Object Model (BOM) Result",
+            "schema": {
+              "type": "object",
+              "example": {"SomeAttribute":  "SomeValue"}
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MultiAxisTable": {
+      "example": {
+        "inputs": [
+          {
+            "dataType": "DecimalType",
+            "token": "Age",
+            "label": "Age",
+            "relativePath": "Age"
+          },
+          {
+            "dataType": "EnumerationType",
+            "token": "Gender",
+            "label": "Gender",
+            "relativePath": "Gender"
+          }
+        ],
+        "outputs": [
+          {
+            "dataType": "BooleanType",
+            "calculation": "undefined",
+            "token": "Eligible",
+            "relativePath": "Eligible",
+            "conditions": [],
+            "label": "false"
+          }
+        ],
+        "version": "0.2.0.draft",
+        "ruleContext": {
+          "name": "noun_Coffee_472911.png",
+          "enumerations": [
+            {
+              "name": "Gender",
+              "values": [
+                {
+                  "value": "Male"
+                },
+                {
+                  "value": "Female"
+                }
+              ]
+            }
+          ]
+        },
+        "name": "OfAge",
+        "decisionObjectType": "DecisionTable",
+        "cells": [
+          {
+            "columnNumber": 1,
+            "rowNumber": 1,
+            "outputs": []
+          },
+          {
+            "columnNumber": 1,
+            "rowNumber": 2,
+            "outputs": []
+          },
+          {
+            "columnNumber": 2,
+            "rowNumber": 1,
+            "outputs": [
+              {
+                "dataType": "BooleanType",
+                "token": "Eligible",
+                "calculation": "true",
+                "active": true
+              }
+            ]
+          },
+          {
+            "columnNumber": 2,
+            "rowNumber": 2,
+            "outputs": [
+              {
+                "dataType": "BooleanType",
+                "token": "Eligible",
+                "calculation": "false",
+                "active": true
+              }
+            ]
+          },
+          {
+            "columnNumber": 3,
+            "rowNumber": 1,
+            "outputs": []
+          },
+          {
+            "columnNumber": 3,
+            "rowNumber": 2,
+            "outputs": []
+          }
+        ],
+        "columns": [
+          {
+            "outputs": [
+              {
+                "dataType": "BooleanType",
+                "token": "Eligible",
+                "calculation": "false",
+                "active": true
+              }
+            ],
+            "conditions": [
+              {
+                "expression": "Age < 19",
+                "conditionType": "Boolean_Expression",
+                "label": "Age < 19",
+                "index": 1
+              }
+            ],
+            "name": "Younger than 19",
+            "index": 1
+          },
+          {
+            "guid": "6755399441059846",
+            "outputs": [],
+            "conditions": [
+              {
+                "expression": "(18 < Age) && (Age < 21)",
+                "conditionType": "Boolean_Expression",
+                "label": "18 < Age < 21",
+                "index": 1
+              }
+            ],
+            "name": "19-20",
+            "index": 2
+          },
+          {
+            "guid": "6755399441060245",
+            "outputs": [
+              {
+                "dataType": "BooleanType",
+                "token": "Eligible",
+                "calculation": "true",
+                "active": true
+              }
+            ],
+            "conditions": [
+              {
+                "expression": "Age > 20",
+                "conditionType": "Boolean_Expression",
+                "label": "Age > 20",
+                "index": 1
+              }
+            ],
+            "name": "Older than 20",
+            "index": 3
+          }
+        ],
+        "rows": [
+          {
+            "guid": "14073748835536702",
+            "outputs": [
+              {
+                "dataType": "BooleanType",
+                "token": "Eligible",
+                "calculation": "true",
+                "active": true
+              }
+            ],
+            "conditions": [
+              {
+                "expression": "Gender === 'Female'",
+                "conditionType": "Boolean_Expression",
+                "label": "Gender === 'Female'",
+                "index": 1
+              }
+            ],
+            "name": "Women",
+            "index": 1
+          },
+          {
+            "outputs": [],
+            "conditions": [
+              {
+                "expression": "Gender === 'Male'",
+                "conditionType": "Boolean_Expression",
+                "label": "Gender === 'Male'",
+                "guid": "17169973579351820",
+                "index": 1
+              }
+            ],
+            "name": "Men",
+            "index": 2
+          }
+        ]
+      },
+
+      "type": "object",
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Axis"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Axis"
+          }
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Cell"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Input"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Output"
+          }
+        },
+        "purpose": {
+          "type": "string"
+        }
+      }
+    },
+    "SingleAxisTable": {
+      "example": {"entries":[{"name":"","outputs":[{"token":"SeatUpgrade","calculation":"'Approved'"},{"token":"Points","calculation":"100"}],"conditions":[{"token":"Level","expression":"'Executive'","conditionType":"Boolean"},{"token":"FlightStatus","expression":"'International'","conditionType":"Boolean"}]},{"name":"","outputs":[{"token":"SeatUpgrade","calculation":"'Not Approved'"},{"token":"Points","calculation":"50"}],"conditions":[{"token":"Level","expression":"'Manager'","conditionType":"Boolean"},{"token":"FlightStatus","expression":"'International'","conditionType":"Boolean"}]}],"version":"1","ruleContext":{"name":"Testing","enumerations":[{"name":"Level","values":[{"value":"Executive"},{"value":"Manager"}]},{"name":"FlightStatus","values":[{"value":"International"},{"value":"Domestic"}]}]},"name":"VTable","inputs":[{"token":"Level","dataType":"Enum","enumerationSet":"Level","mockValue":"'Executive'"},{"token":"FlightStatus","dataType":"Enum","enumerationSet":"FlightStatus","mockValue":"'International'"}],"outputs":[{"token":"SeatUpgrade"},{"token":"Points"}],"parentName":"","decisionObjectType":"SingleAxisTable","purpose":""},
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Axis"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Input"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Output"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Condition"
+          }
+        },
+        "purpose": {
+          "type": "string"
+        }
+      }
+    },
+    "RuleSet": {
+      "example": {"inputs":[{"dataType":"DecimalType","token":"totalSales","label":"Total Sales","relativePath":"TotalSales"},{"dataType":"DecimalType","token":"totalAssets","label":"Total Assets","relativePath":"TotalAssets"},{"dataType":"DecimalType","token":"accountReceivable","label":"Account Receivable","relativePath":"AccountReceivable"},{"dataType":"DecimalType","token":"inventory","label":"Inventory","relativePath":"Inventory"},{"dataType":"DecimalType","token":"accountsPayable","label":"Accounts Payable","relativePath":"AccountsPayable"},{"dataType":"DecimalType","token":"purchases","label":"Purchases","relativePath":"Purchases"},{"dataType":"DecimalType","token":"costOfGoodsSold","label":"Cost Of Goods Sold","relativePath":"CostOfGoodsSold"}],"outputs":[{"dataType":"DecimalType","calculation":"result = Math.round((totalSales / totalAssets) * 1000) / 1000","token":"assetTurnover","relativePath":"AssetTurnover","conditions":[],"label":"Asset Turnover"},{"dataType":"DecimalType","calculation":"result = Math.round((costOfGoodsSold / inventory) * 1000) / 1000","token":"inventoryTurnover","relativePath":"InventoryTurnover","conditions":[],"label":"Inventory Turnover"},{"dataType":"DecimalType","calculation":"result = Math.round(( 365 / inventoryTurnover) * 1000) / 1000","token":"daysOnInventory","relativePath":"DaysOnInventory","conditions":[],"label":"Days On Inventory"},{"dataType":"DecimalType","calculation":"result = Math.round(((accountsPayable / purchases) * 365) * 1000) / 1000","token":"aPPaymentPeriod","relativePath":"aPPaymentPeriod","conditions":[],"label":"A/P Payment Period","ruleBehaviour":"Require_All_Inputs"},{"dataType":"DecimalType","calculation":"result = Math.round(((accountReceivable / totalSales) * 365) * 1000) / 1000","token":"aRCollectionPeriod","relativePath":"ARCollectionPeriod","conditions":[],"label":"A/R Collection Period","ruleBehaviour":"Require_All_Inputs"},{"dataType":"DecimalType","calculation":"result = Math.round((totalSales / accountReceivable) * 1000) / 1000","token":"receivablesTurnover","relativePath":"ReceivablesTurnover","conditions":[],"label":"Receivables Turnover"},{"dataType":"DecimalType","calculation":"result = Math.round((365 / receivablesTurnover) * 1000) / 1000","token":"daysOfSalesOutstanding","relativePath":"DaysOfSalesOutstanding","conditions":[],"label":"Days Of Sales Outstanding"}],"version":"2.1.0.draft","ruleContext":{"name":"Image.svg","enumerations":[]},"name":"Activity","decisionObjectType":"RuleSet"},
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Input"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Output"
+          }
+        },
+        "purpose": {
+          "type": "string"
+        }
+      }
+    },
+    "Axis": {
+      "type": "object",
+      "allOf": [
+        {
+          "required": [
+            "name",
+            "index",
+            "outputs",
+            "conditions"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "index": {
+              "type": "number"
+            },
+            "outputs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Output"
+              }
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Output"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Cell": {
+      "type": "object",
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "columnNumber": {
+              "type": "number"
+            },
+            "rowNumber": {
+              "type": "number"
+            },
+            "outputs": {
+              "type": "object",
+              "$ref": "#/definitions/Output"
+            }
+          }
+        }
+      ]
+    },
+    "Output": {
+      "type": "object",
+      "allOf": [
+        {
+          "required": [
+            "calculation",
+            "dataType",
+            "token"
+          ],
+          "properties": {
+            "token": {
+              "type": "string"
+            },
+            "calculation": {
+              "type": "string"
+            },
+            "rawValue": {
+              "type": "string"
+            },
+            "ruleBehaviour": {
+              "type": "number"
+            },
+            "label": {
+              "type": "string"
+            },
+            "dataType": {
+              "type": "number",
+              "enum": ["Unknown", "String", "Integer", "Boolean", "Date", "Decimal", "Enum", "List", "Object"],
+              "default": "String"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Condition"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Input": {
+      "type": "object",
+      "allOf": [
+        {
+          "required": [
+            "rawValue",
+            "dataType",
+            "token"
+          ],
+          "properties": {
+            "token": {
+              "type": "string"
+            },
+            "rawValue": {
+              "type": "string"
+            },
+            "ruleBehaviour": {
+              "type": "number"
+            },
+            "label": {
+              "type": "string"
+            },
+            "dataType": {
+              "type": "number",
+              "enum": ["Unknown", "String", "Integer", "Boolean", "Date", "Decimal", "Enum", "List", "Object"],
+              "default": "String"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Condition"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Condition": {
+      "type": "object",
+      "allOf": [
+        {
+          "required": [
+            "conditionType",
+            "token",
+            "calculation",
+            "dataType",
+            "calculation"
+          ],
+          "properties": {
+            "conditionType": {
+              "type": [0, 1, 2, 3, 4, 5]
+            },
+            "calculation": {
+              "type": "string"
+            },
+            "expression": {
+              "type": "string"
+            },
+            "number": {
+              "type": "string"
+            },
+            "from": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "includeFrom": {
+              "type": "boolean"
+            },
+            "includeTo": {
+              "type": "boolean"
+            },
+            "token": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "index": {
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "ErrorModel": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "RuleArtifact": {
+      "example": {"rules":[{"name":"AssetTurnover","code":"var result = undefined;    result = Math.round((bom.TotalSales / bom.TotalAssets) * 1000) / 1000","behaviour":"Normal"},{"name":"InventoryTurnover","code":"var result = undefined;    result = Math.round((bom.CostOfGoodsSold / bom.Inventory) * 1000) / 1000","behaviour":"Normal"},{"name":"DaysOnInventory","code":"var result = undefined;    result = Math.round((365 / bom.InventoryTurnover) * 1000) / 1000","behaviour":"Normal"},{"name":"aPPaymentPeriod","code":"var result = undefined;    result = Math.round(((bom.AccountsPayable / bom.Purchases) * 365) * 1000) / 1000","behaviour":"Normal"},{"name":"ARCollectionPeriod","code":"var result = undefined;    result = Math.round(((bom.AccountReceivable / bom.TotalSales) * 365) * 1000) / 1000","behaviour":"Normal"},{"name":"ReceivablesTurnover","code":"var result = undefined;    result = Math.round((bom.TotalSales / bom.AccountReceivable) * 1000) / 1000","behaviour":"Normal"},{"name":"DaysOfSalesOutstanding","code":"var result = undefined;    result = Math.round((365 / bom.ReceivablesTurnover) * 1000) / 1000","behaviour":"Normal"}],"Version":"2.1.0.draft","Id":"Activity","SchemaVersion":"219b468a47bc7332df01ceba4d20cf56","error":{}},
+      "type": "object",
+      "required": [
+        "rules",
+        "Version",
+        "Id",
+        "SchemaVersion"
+      ],
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rule"
+          }
+        },
+        "Version": {
+          "type": "string"
+        },
+        "Id": {
+          "type": "string"
+        },
+        "SchemaVersion": {
+          "type": "string"
+        }
+      }
+    },
+    "Rule": {
+      "type": "object",
+      "required": [
+        "name",
+        "code",
+        "behaviour"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "behaviour": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
