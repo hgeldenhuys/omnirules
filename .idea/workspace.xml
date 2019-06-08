@@ -2,71 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5e2514c-80d0-4af7-b290-4b2bddb0ca94" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dockerfile.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rest Samples/GenerateMultiAxisTable.request" beforeDir="false" afterPath="$PROJECT_DIR$/Rest Samples/GenerateMultiAxisTable.request" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rest Samples/GenerateRuleSet.request" beforeDir="false" afterPath="$PROJECT_DIR$/Rest Samples/GenerateRuleSet.request" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rest Samples/Load.request" beforeDir="false" afterPath="$PROJECT_DIR$/Rest Samples/Load.request" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/omnirule.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/omnirule.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/test-results/assets/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/test-results/assets/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/test-results/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/test-results/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/test-results/index.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/test-results/index.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/author.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/author.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/author.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/author.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/author.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/author.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/d3cloud.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/d3cloud.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/d3cloud.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/d3cloud.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/d3cloud.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/d3cloud.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/languagetest.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/languagetest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/languagetest.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/languagetest.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/languagetest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/languagetest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rulesengine.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/rulesengine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rulesengine.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/rulesengine.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rulesengine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/rulesengine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitterproducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitterproducer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitterproducer.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitterproducer.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitterproducer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitterproducer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srv/app.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/srv/app.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srv/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/srv/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/setup_decisionobject.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/setup_decisionobject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/setup_decisionobject.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/setup_decisionobject.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/setup_decisionobject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/setup_decisionobject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/setup_decisiontable.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/setup_decisiontable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/setup_decisiontable.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/setup_decisiontable.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/setup_decisiontable.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/setup_decisiontable.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_basics.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_basics.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_basics.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_basics.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_basics.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_basics.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_decisionobject.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_decisionobject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_decisionobject.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_decisionobject.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_decisionobject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_decisionobject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_decisiontables.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_decisiontables.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_decisiontables.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_decisiontables.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_decisiontables.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_decisiontables.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_exceptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_exceptions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_exceptions.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_exceptions.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_exceptions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_exceptions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_mapfunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_mapfunctions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_mapfunctions.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_mapfunctions.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_mapfunctions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_mapfunctions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_performance.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_performance.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_performance.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_performance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_performance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_schema.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_schema.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_schema.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_schema.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/dist/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -83,8 +20,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/author.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2505">
-              <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+            <state relative-caret-position="-223">
+              <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
               <folding>
                 <element signature="e#0#100#0" expanded="true" />
               </folding>
@@ -118,11 +55,11 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="214">
-              <caret line="56" column="21" selection-start-line="56" selection-start-column="21" selection-end-line="56" selection-end-column="21" />
+            <state relative-caret-position="394">
+              <caret line="69" column="20" selection-start-line="69" selection-start-column="20" selection-end-line="69" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -148,7 +85,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/test_basics.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="188">
@@ -160,23 +97,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rulesengine.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="63" column="6" selection-start-line="63" selection-start-column="6" selection-end-line="63" selection-end-column="6" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Builder</find>
       <find>add</find>
       <find>If the applicant's age is 18 then the result is false.</find>
       <find>version</find>
@@ -205,6 +129,8 @@
       <find>Fact</find>
       <find>IDataPoint</find>
       <find>Input</find>
+      <find>querystringify</find>
+      <find>remarkable</find>
     </findStrings>
     <replaceStrings>
       <replace>code</replace>
@@ -236,8 +162,9 @@
         <option value="$PROJECT_DIR$/test/test_schema.ts" />
         <option value="$PROJECT_DIR$/test/setup_decisionobject.ts" />
         <option value="$PROJECT_DIR$/test/test_decisionobject.ts" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/author.ts" />
+        <option value="$PROJECT_DIR$/package-lock.json" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -271,6 +198,12 @@
               <item name="omnirules" type="b2602c69:ProjectViewProjectNode" />
               <item name="omnirules" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="omnirules" type="b2602c69:ProjectViewProjectNode" />
+              <item name="omnirules" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="author.ts" type="620a8d5e:NestingTreeNode" />
             </path>
             <path>
               <item name="omnirules" type="b2602c69:ProjectViewProjectNode" />
@@ -394,7 +327,7 @@
       <workItem from="1556839332409" duration="55000" />
       <workItem from="1556987920576" duration="2930000" />
       <workItem from="1560007161537" duration="2484000" />
-      <workItem from="1560009987488" duration="2789000" />
+      <workItem from="1560009987488" duration="3017000" />
     </task>
     <servers />
   </component>
@@ -431,7 +364,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37844000" />
+    <option name="totallyTimeSpent" value="38072000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -444,14 +377,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="1027" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48039216" visible="true" weight="0.24954791" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48013246" visible="true" weight="0.24954791" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="npm" order="2" sideWeight="0.51960784" side_tool="true" visible="true" weight="0.24954791" />
+      <window_info id="npm" order="2" sideWeight="0.51986754" side_tool="true" visible="true" weight="0.24954791" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32894737" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32894737" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32894737" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -460,7 +394,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32894737" />
       <window_info anchor="bottom" id="TypeScript" order="9" weight="0.32894737" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.3377193" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.3377193" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -774,23 +708,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
-          <caret line="56" column="21" selection-start-line="56" selection-start-column="21" selection-end-line="56" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/author.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2505">
-          <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#100#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/bom.ts">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -833,6 +750,30 @@
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/author.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-223">
+          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#100#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package-lock.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="8252" column="4" selection-start-line="8252" selection-start-column="4" selection-end-line="8252" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="394">
+          <caret line="69" column="20" selection-start-line="69" selection-start-column="20" selection-end-line="69" selection-end-column="20" />
         </state>
       </provider>
     </entry>
