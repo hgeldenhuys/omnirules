@@ -9,8 +9,8 @@ describe(`Map Functions: Map Run`, () => {
         const decisionObjectStructure = {
             name: `MapRun`,
             version: "1",
-            inputs: [{token: "BrandIndex", dataType: DataTypeEnum.Integer}],
-            outputs: [{token: "BrandPriority", calculation: "BrandIndex + 1"}]
+            inputs: [{name: "BrandIndex", dataType: DataTypeEnum.Integer}],
+            outputs: [{name: "BrandPriority", code: "BrandIndex + 1"}]
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
         const bomArray = [
@@ -38,8 +38,8 @@ describe(`Map Functions: Map Run`, () => {
         const decisionObjectStructure = {
             name: `MapRun`,
             version: "2",
-            inputs: [{token: "BrandIndex", dataType: DataTypeEnum.Integer}],
-            outputs: [{token: "BrandPriority", calculation: "BrandIndex + 1"}]
+            inputs: [{name: "BrandIndex", dataType: DataTypeEnum.Integer}],
+            outputs: [{name: "BrandPriority", code: "BrandIndex + 1"}]
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
         const bomArray = [
@@ -67,8 +67,8 @@ describe(`Map Functions: Map Run`, () => {
         const decisionObjectStructure = {
             name: `FilterRun`,
             version: "2",
-            inputs: [{token: "BrandIndex", dataType: DataTypeEnum.Integer}],
-            outputs: [{token: "BrandPriority", calculation: "BrandIndex + 1"}, {token: "Odd", calculation: "BrandIndex % 2 === 1"}]
+            inputs: [{name: "BrandIndex", dataType: DataTypeEnum.Integer}],
+            outputs: [{name: "BrandPriority", code: "BrandIndex + 1"}, {name: "Odd", code: "BrandIndex % 2 === 1"}]
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
         const bomArray = [
@@ -96,8 +96,8 @@ describe(`Map Functions: Map Run`, () => {
         const decisionObjectStructure = {
             name: `FilterRun`,
             version: "2",
-            inputs: [{token: "BrandIndex", dataType: DataTypeEnum.Integer}],
-            outputs: [{token: "BrandPriority", calculation: "BrandIndex + 1"}, {token: "Odd", calculation: "BrandIndex % 2 === 1"}]
+            inputs: [{name: "BrandIndex", dataType: DataTypeEnum.Integer}],
+            outputs: [{name: "BrandPriority", code: "BrandIndex + 1"}, {name: "Odd", code: "BrandIndex % 2 === 1"}]
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
         const bomArray = [

@@ -12,43 +12,43 @@ const engine = new Rulesengine(decisionTable.getRules().rules, BOM, decisionTabl
 describe(`Eligibility: DecisionTable`, () => {
     it("11 year old female  = x", () => {
         BOM = {Age: 11,  Gender: "Female"};
-        engine.reset(BOM).run();
-        const result = BOM[eligibleOutput.relativePath];
+        engine.withBom(BOM).run();
+        const result = BOM[eligibleOutput.path];
         expect(result).to.equal(false);
     });
 
     it("13 year old male    = x", () => {
         BOM = {Age: 13,  Gender: "Male"};
-        engine.reset(BOM).run();
-        const result = BOM[eligibleOutput.relativePath];
+        engine.withBom(BOM).run();
+        const result = BOM[eligibleOutput.path];
         expect(result).to.equal(false);
     });
 
     it("18 year old female  = ✓", () => {
         BOM = {Age: 18,  Gender: "Female"};
-        engine.reset(BOM).run();
-        const result = BOM[eligibleOutput.token];
+        engine.withBom(BOM).run();
+        const result = BOM[eligibleOutput.name];
         expect(result).to.equal(true);
     });
 
     it("18 year old male    = x", () => {
         BOM = {Age: 18,  Gender: "Male"};
-        engine.reset(BOM).run();
-        const result = BOM[eligibleOutput.relativePath];
+        engine.withBom(BOM).run();
+        const result = BOM[eligibleOutput.path];
         expect(result).to.equal(false);
     });
 
     it("21 year old male    = ✓", () => {
         BOM = {Age: 21,  Gender: "Male"};
-        engine.reset(BOM).run();
-        const result = BOM[eligibleOutput.relativePath];
+        engine.withBom(BOM).run();
+        const result = BOM[eligibleOutput.path];
         expect(result).to.equal(true);
     });
 
     it(`18 year old them    = x`, () => {
-        const bom = {Age: 18,  Gender: "Unknown"};
-        engine.reset(bom).run();
-        const result = bom[eligibleOutput.relativePath];
+        const bom = {Age: 18,  Gender: "Any"};
+        engine.withBom(bom).run();
+        const result = bom[eligibleOutput.path];
         expect(result).to.equal(false);
     });
 });
@@ -82,37 +82,35 @@ describe(`DecisionTables: Russian Nesting Dolls`, () => {
         middle.outputs.push({
             decisionObject: small,
             inputMappings: [{To: "StartWith", From: "StartWith"}, {From: "Size", To: "Size"}],
-            token: "SmallDoll",
             name: "SmallDoll",
-            relativePath: "SmallDoll",
+            path: "SmallDoll",
             conditions: [],
             ruleBehaviour: RuleBehaviour.Normal,
             mockValue: undefined,
             definition: "",
             rawValue: true,
-            calculation: "StartWith + 1",
+            code: "StartWith + 1",
             dataType: DataTypeEnum.Object
         });
         // Small Doll
-        middle.outputs[0].calculation = "SmallDoll.DollsInsideAndIncludingMe + 1";
+        middle.outputs[0].code = "SmallDoll.DollsInsideAndIncludingMe + 1";
     });
 
     it(`Add Medium Doll inside BigDoll (3 levels)`, () => {
         big.outputs.push({
             decisionObject: middle,
             inputMappings: [{To: "StartWith", From: "StartWith"}, {From: "Size", To: "Size"}],
-            token: "MediumDoll",
-            name: "MediumDollName",
-            relativePath: "MediumDollPath",
+            name: "MediumDoll",
+            path: "MediumDollPath",
             conditions: [],
             ruleBehaviour: RuleBehaviour.Normal,
             mockValue: undefined,
             definition: "",
             rawValue: true,
-            calculation: "StartWith + 1",
+            code: "StartWith + 1",
             dataType: DataTypeEnum.Object
         });
-        big.outputs[0].calculation = "MediumDoll.DollsInsideAndIncludingMe + 1";
+        big.outputs[0].code = "MediumDoll.DollsInsideAndIncludingMe + 1";
     });
 
     it(`Add Big Doll`, () => {
@@ -139,18 +137,18 @@ describe(`Single-Axis Table`, () => {
                 {
                     name: "",
                     outputs: [{
-                        token: "SeatUpgrade",
-                        calculation: "'Approved'"
+                        name: "SeatUpgrade",
+                        code: "'Approved'"
                     }, {
-                        token: "Points",
-                        calculation: "100"
+                        name: "Points",
+                        code: "100"
                     }],
                     conditions: [{
-                        token: "Level",
+                        name: "Level",
                         expression: "'Executive'",
                         conditionType: ConditionTypeEnum.Boolean
                     }, {
-                        token: "FlightStatus",
+                        name: "FlightStatus",
                         expression: "'International'",
                         conditionType: ConditionTypeEnum.Boolean
                     }]
@@ -158,18 +156,18 @@ describe(`Single-Axis Table`, () => {
                 {
                     name: "",
                     outputs: [{
-                        token: "SeatUpgrade",
-                        calculation: "'Not Approved'"
+                        name: "SeatUpgrade",
+                        code: "'Not Approved'"
                     }, {
-                        token: "Points",
-                        calculation: "50"
+                        name: "Points",
+                        code: "50"
                     }],
                     conditions: [{
-                        token: "Level",
+                        name: "Level",
                         expression: "'Manager'",
                         conditionType: ConditionTypeEnum.Boolean
                     }, {
-                        token: "FlightStatus",
+                        name: "FlightStatus",
                         expression: "'International'",
                         conditionType: ConditionTypeEnum.Boolean
                     }]
@@ -195,20 +193,20 @@ describe(`Single-Axis Table`, () => {
             },
             name: "VTable",
             inputs: [{
-                token: "Level",
+                name: "Level",
                 dataType: DataTypeEnum.Enum,
                 enumerationSet: "Level",
                 mockValue: "'Executive'"
             }, {
-                token: "FlightStatus",
+                name: "FlightStatus",
                 dataType: DataTypeEnum.Enum,
                 enumerationSet: "FlightStatus",
                 mockValue: "'International'"
             }],
             outputs: [{
-                token: "SeatUpgrade"
+                name: "SeatUpgrade"
             }, {
-                token: "Points"
+                name: "Points"
             }],
             parentName: "",
             decisionObjectType: DecisionObjectType.SingleAxisTable,
@@ -222,7 +220,7 @@ describe(`Single-Axis Table`, () => {
 
         vTable.getInput("Level").mockValue = "'Manager'";
         sampleBOM = vTable.generateSampleBOM(true);
-        engine.reset(sampleBOM).run({withStats: true});
+        engine.withBom(sampleBOM).run({withStats: true});
 
         expect(sampleBOM.getValue("SeatUpgrade")).to.equal("Not Approved");
     });
@@ -243,28 +241,28 @@ describe(`Multi Axis Table Defaults`, () => {
             inputs: [],
             outputs: [
                 {
-                    token: "Earth",
+                    name: "Earth",
                     dataType: DataTypeEnum.String,
                     mockValue: "'EARTH'",
-                    calculation: "'Earth is read from the Table'"
+                    code: "'Earth is read from the Table'"
                 },
                 {
-                    token: "Air",
+                    name: "Air",
                     dataType: DataTypeEnum.String,
                     mockValue: "'AIR'",
-                    calculation: "'Table has Air'"
+                    code: "'Table has Air'"
                 },
                 {
-                    token: "Fire",
+                    name: "Fire",
                     dataType: DataTypeEnum.String,
                     mockValue: "'FIRE'",
-                    calculation: "'Table has Fire'"
+                    code: "'Table has Fire'"
                 },
                 {
-                    token: "Water",
+                    name: "Water",
                     dataType: DataTypeEnum.String,
                     mockValue: "'WATER'",
-                    calculation: "'Table has Water'"
+                    code: "'Table has Water'"
                 }],
             columns: [
                 {
@@ -272,10 +270,10 @@ describe(`Multi Axis Table Defaults`, () => {
                     conditions: [],
                     outputs: [
                         {
-                            token: "Fire",
+                            name: "Fire",
                             dataType: DataTypeEnum.String,
                             mockValue: "'FIRE'",
-                            calculation: "'Fire is read from Column'"
+                            code: "'Fire is read from Column'"
                         }
                     ]
                 }
@@ -285,10 +283,10 @@ describe(`Multi Axis Table Defaults`, () => {
                     name: "AlwaysTrue",
                     conditions: [],
                     outputs: [{
-                        token: "Air",
+                        name: "Air",
                         dataType: DataTypeEnum.String,
                         mockValue: "'AIR'",
-                        calculation: "'Air is read from Row'"
+                        code: "'Air is read from Row'"
                     }]
                 }
             ],
@@ -297,10 +295,10 @@ describe(`Multi Axis Table Defaults`, () => {
                 rowNumber: 1,
                 outputs: [
                     {
-                        token: "Water",
+                        name: "Water",
                         dataType: DataTypeEnum.String,
                         mockValue: "'WATER'",
-                        calculation: "'Water is read from Cell'"
+                        code: "'Water is read from Cell'"
                     }
                 ]
             }]

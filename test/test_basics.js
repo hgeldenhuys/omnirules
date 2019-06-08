@@ -5,13 +5,69 @@ require("mocha");
 var author_1 = require("../src/author");
 var rulesengine_1 = require("../src/rulesengine");
 describe("Basics: Inputs", function () {
+    var tbuilder = new author_1.DecisionObject(undefined, {
+        version: "1.0",
+        name: "Type Inference",
+        inputs: [{
+                name: "rawInput"
+            }],
+        outputs: [
+            {
+                name: "possibleNumber",
+                dataType: author_1.DataTypeEnum.Boolean,
+                code: "!isNaN(eval(rawInput))",
+                path: "possible.Number"
+            },
+            {
+                name: "possibleString",
+                dataType: author_1.DataTypeEnum.Boolean,
+                code: "!!eval(rawInput) && !!eval(rawInput).length",
+                path: "possible.String"
+            },
+            {
+                name: "possibleId",
+                dataType: author_1.DataTypeEnum.Boolean,
+                code: "possibleNumber && possibleString",
+                path: "possible.Id"
+            },
+            {
+                name: "Length",
+                dataType: author_1.DataTypeEnum.Integer,
+                code: "possibleString && rawInput.length"
+            },
+            {
+                name: "Is13Long",
+                dataType: author_1.DataTypeEnum.Boolean,
+                code: "possibleId && Length === 15"
+            }
+        ]
+    });
+    rulesengine_1.engines.loadDecisionObject(tbuilder);
+    var builder2 = new author_1.DecisionObject(undefined, {
+        name: "Check ID",
+        version: "1.0",
+        inputs: [
+            {
+                name: "IDNumber",
+                dataType: author_1.DataTypeEnum.Any
+            }
+        ],
+        outputs: [
+            {
+                name: "IsValid",
+                dataType: author_1.DataTypeEnum.Object,
+                code: "\n                const ti = engine.getEngine(\"" + tbuilder.name + "\", \"" + tbuilder.version + "\").withBom({rawInput: \"'\" + IDNumber + \"'\"}).run();\n                result = ti.Length === 15;"
+            }
+        ]
+    });
+    rulesengine_1.jlog(new rulesengine_1.Rulesengine(builder2.getRules().rules, { IDNumber: 8003075050084 }).run({ withStats: true }));
     var start = Date.now();
     var rules = { rules: [{ name: "ToDoAskForTray", code: "result = bom.Drink.length > 2;", behaviour: 1 }, { name: "Pay", code: "result = ((bom.ToDoAskForTray == false) || (bom.AskedForTray && bom.ToDoAskForTray)) && (bom.Drink.length > 0);", behaviour: 1 }], Version: "3.2.0" };
     var engine = new rulesengine_1.Rulesengine(rules.rules, {}, "Test", "1.0", "ABC");
     for (var x = 0; x < 10000; x++) {
         var BOM = { Drink: [{ Type: "Americano", Size: "Mezo" }, { Type: "Americano", Size: "Mezo" }, { Type: "Americano", Size: "Mezo" }],
             AskedForTray: false, ToDoAskForTray: false };
-        engine.reset(BOM);
+        engine.withBom(BOM);
         engine.run({ withStats: true });
     }
     console.log("Took: " + (Date.now() - start));
@@ -19,8 +75,8 @@ describe("Basics: Inputs", function () {
         var decisionObjectStructure = {
             name: "Basic",
             version: "1",
-            inputs: [{ token: "Name", dataType: author_1.DataTypeEnum.String }],
-            outputs: [{ token: "FullName", calculation: "Name + ' ' + LastName" }]
+            inputs: [{ name: "Name", dataType: author_1.DataTypeEnum.String }],
+            outputs: [{ name: "FullName", code: "Name + ' ' + LastName" }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         var BOM = decisionObject.generateSampleBOM();
@@ -30,8 +86,8 @@ describe("Basics: Inputs", function () {
         var decisionObjectStructure = {
             name: "Basic",
             version: "1",
-            inputs: [{ token: "Name", dataType: author_1.DataTypeEnum.String }],
-            outputs: [{ token: "FullName", calculation: "Name + ' ' + LastName" }]
+            inputs: [{ name: "Name", dataType: author_1.DataTypeEnum.String }],
+            outputs: [{ name: "FullName", code: "Name + ' ' + LastName" }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         decisionObject.builder.withInput("LastName").asString("Geldenhuys");
@@ -42,8 +98,8 @@ describe("Basics: Inputs", function () {
         var decisionObjectStructure = {
             name: "Basic",
             version: "1",
-            inputs: [{ token: "Name", dataType: author_1.DataTypeEnum.String, mockValue: "'Herman'" }, { token: "LastName", dataType: author_1.DataTypeEnum.String, mockValue: "'Geldenhuys'" }],
-            outputs: [{ token: "FullName", calculation: "Name + ' ' + LastName", dataType: author_1.DataTypeEnum.String }]
+            inputs: [{ name: "Name", dataType: author_1.DataTypeEnum.String, mockValue: "'Herman'" }, { name: "LastName", dataType: author_1.DataTypeEnum.String, mockValue: "'Geldenhuys'" }],
+            outputs: [{ name: "FullName", code: "Name + ' ' + LastName", dataType: author_1.DataTypeEnum.String }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         var BOM = decisionObject.generateSampleBOM();
@@ -55,11 +111,11 @@ describe("Basics: Inputs", function () {
         var decisionObjectStructure = {
             name: "Basic",
             version: "1",
-            inputs: [{ token: "Name", dataType: author_1.DataTypeEnum.String, mockValue: "'Hendrik'" }, { token: "LastName", dataType: author_1.DataTypeEnum.String, mockValue: "'Geldenhuys'" }],
+            inputs: [{ name: "Name", dataType: author_1.DataTypeEnum.String, mockValue: "'Hendrik'" }, { name: "LastName", dataType: author_1.DataTypeEnum.String, mockValue: "'Geldenhuys'" }],
             outputs: []
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
-        decisionObject.builder.withOutput("FullName").asString().usingCalculation("Name + ' ' + LastName");
+        decisionObject.builder.withOutput("FullName").asString().usingCode("Name + ' ' + LastName");
         var BOM = decisionObject.generateSampleBOM();
         var engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());
         engine.run({ withStats: false });
@@ -116,7 +172,7 @@ describe("Basics: Inputs", function () {
         ruleSet.builder
             .withInput("PeekA").asString("BOO").comma()
             .withInput("options.ABoolean").asBoolean(true).comma()
-            .withOutput("I").usingCalculation("'See You!'");
+            .withOutput("I").usingCode("'See You!'");
         var decisionObject = new author_1.DecisionObject(undefined, ruleSet);
         var bom = ruleSet.generateSampleBOM();
         var engine = new rulesengine_1.Rulesengine(decisionObject.getRules().rules, bom, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());
@@ -131,7 +187,7 @@ describe("Basics: Inputs", function () {
         ruleSet.builder
             .withInput("PeekA").asString("BOO").comma()
             .withInput("options.ABoolean").asBoolean(true).comma()
-            .withOutput("I").usingCalculation("'See You!'");
+            .withOutput("I").usingCode("'See You!'");
         var bom = ruleSet.generateSampleBOM();
         var engine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());
         engine.run();
@@ -157,7 +213,7 @@ describe("Basics: Inputs", function () {
         ruleSet.builder
             .withInput("PeekA").asString("BOO").comma()
             .withInput("options.ABoolean").asBoolean(true).comma()
-            .withOutput("I").usingCalculation("'See You!'")
+            .withOutput("I").usingCode("'See You!'")
             .ifTrueThat("ABoolean").and()
             .ifTrueThat("PeekA==='BOO'");
         var bom = ruleSet.generateSampleBOM();

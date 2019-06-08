@@ -7,8 +7,8 @@ var rulesengine_1 = require("../src/rulesengine");
 var decisionObjectStructure = {
     name: "FilterRun",
     version: "2",
-    inputs: [{ token: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
-    outputs: [{ token: "BrandPriority", calculation: "BrandIndex + 1" }, { token: "Odd", calculation: "BrandIndex % 2 === 1" }]
+    inputs: [{ name: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
+    outputs: [{ name: "BrandPriority", code: "BrandIndex + 1" }, { name: "Odd", code: "BrandIndex % 2 === 1" }]
 };
 var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
 var rules = decisionObject.getRules();
@@ -30,14 +30,14 @@ describe("Performance", function () {
             .withInput("Name").asString("Herman").thenNext()
             .withInput("LastName").asString("Geldenhuys").thenNext()
             .withInput("Age").asInteger(33).thenNext()
-            .withOutput("FullName").asString().withCalculation("Name + ' ' + LastName").thenNext()
-            .withOutput("Summary").withCalculation("FullName + ' is ' + Age + ' years old.'");
+            .withOutput("FullName").asString().withCode("Name + ' ' + LastName").thenNext()
+            .withOutput("Summary").withCode("FullName + ' is ' + Age + ' years old.'");
         var BOM = { Name: "Herman", LastName: "Geldenhuys", Age: 33, Summary: undefined };
         var engine = new rulesengine_1.Rulesengine(ruleSet.getRules().rules, BOM, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());
         var start = new Date();
         for (var iterator = 0; iterator < 1000; iterator++) {
             BOM = { Name: "Herman", LastName: "Geldenhuys", Age: iterator, Summary: undefined };
-            engine.reset(BOM).run();
+            engine.withBom(BOM).run();
         }
         var took = (new Date()).getTime() - start.getTime();
         console.log("took: " + took);
@@ -48,8 +48,8 @@ describe("Performance", function () {
         var decisionObjectStructure = {
             name: "MapRun",
             version: "1",
-            inputs: [{ token: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
-            outputs: [{ token: "BrandPriority", calculation: "BrandIndex + 1" }]
+            inputs: [{ name: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
+            outputs: [{ name: "BrandPriority", code: "BrandIndex + 1" }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         var bomArray = [];
@@ -67,8 +67,8 @@ describe("Performance", function () {
         var decisionObjectStructure = {
             name: "MapRun",
             version: "1",
-            inputs: [{ token: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
-            outputs: [{ token: "BrandPriority", calculation: "BrandIndex + 1" }, { token: "Odd", calculation: "BrandIndex % 2 === 1" }, { token: "Even", calculation: "!Odd" }, { token: "Complex", calculation: "Odd + ':' + Even + ':' + BrandPriority" }]
+            inputs: [{ name: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
+            outputs: [{ name: "BrandPriority", code: "BrandIndex + 1" }, { name: "Odd", code: "BrandIndex % 2 === 1" }, { name: "Even", code: "!Odd" }, { name: "Complex", code: "Odd + ':' + Even + ':' + BrandPriority" }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         var bomArray = [];
@@ -86,8 +86,8 @@ describe("Performance", function () {
         var decisionObjectStructure = {
             name: "MapRun",
             version: "1",
-            inputs: [{ token: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
-            outputs: [{ token: "BrandPriority", calculation: "BrandIndex + 1" }]
+            inputs: [{ name: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
+            outputs: [{ name: "BrandPriority", code: "BrandIndex + 1" }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         var bomArray = [];
@@ -105,8 +105,8 @@ describe("Performance", function () {
         var decisionObjectStructure = {
             name: "FilterRun",
             version: "1",
-            inputs: [{ token: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
-            outputs: [{ token: "BrandPriority", calculation: "BrandIndex + 1" }, { token: "Odd", calculation: "BrandIndex % 2 === 1" }]
+            inputs: [{ name: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
+            outputs: [{ name: "BrandPriority", code: "BrandIndex + 1" }, { name: "Odd", code: "BrandIndex % 2 === 1" }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         var bomArray = [];
@@ -124,8 +124,8 @@ describe("Performance", function () {
         var decisionObjectStructure = {
             name: "FilterRun",
             version: "2",
-            inputs: [{ token: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
-            outputs: [{ token: "BrandPriority", calculation: "BrandIndex + 1" }, { token: "Odd", calculation: "BrandIndex % 2 === 1" }]
+            inputs: [{ name: "BrandIndex", dataType: author_1.DataTypeEnum.Integer }],
+            outputs: [{ name: "BrandPriority", code: "BrandIndex + 1" }, { name: "Odd", code: "BrandIndex % 2 === 1" }]
         };
         var decisionObject = new author_1.DecisionObject(undefined, decisionObjectStructure);
         var bomArray = [];

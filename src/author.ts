@@ -7,17 +7,17 @@ const terser = require("terser");
 
 const avro = require("avsc");
 
-export function functionize(calculation: string, addFunction = false, rawValue = false) {
+export function functionize(code: string, addFunction = false, rawValue = false) {
     if (!rawValue) {
-        calculation = calculation || "";
-        if (calculation.indexOf("result") === -1) {
-            calculation = `var result=undefined; result = ${calculation}`;
+        code = code || "";
+        if (code.indexOf("result") === -1) {
+            code = `var result=undefined; result = ${code}`;
         }
         if (addFunction) {
-            calculation = `function() {${calculation}; return result}`;
+            code = `function() {${code}; return result}`;
         }
     }
-    return calculation;
+    return code;
 }
 
 export function assert(expr, message, code) {
@@ -27,18 +27,18 @@ export function assert(expr, message, code) {
     return assert;
 }
 
-export function replaceTokensWithPath(calculation, token, path) {
-    const previousRegex = new RegExp(`\\b\\.${token}\\b`, "g");
-    const tokenRegEx = new RegExp(`(?!'|")\\b${token}\\b(?!'|")`, "g");
-    const restorePreviousRegex = new RegExp(`\\b\\._${token}\\b`, "g");
-    const restoreValuesBetweenSingleQuotesRegex = new RegExp(`\('\)\\b\(\[^'\]*\)\(bom.\)${token}\(\[\^'\]*\)\\b\('\)`, "g");
-    const restoreValuesBetweenDoubleQuotesRegex = new RegExp(`\("\)\\b\(\[^"\]*\)\(bom.\)${token}\(\[\^"\]*\)\\b\("\)`, "g");
-    calculation = calculation.replace(previousRegex, `._${token}`);
-    calculation = calculation.replace(tokenRegEx, `${path}`);
-    calculation = calculation.replace(restorePreviousRegex, `.${token}`);
-    calculation = calculation.replace(restoreValuesBetweenSingleQuotesRegex, `'$2${token}$4'`);
-    calculation = calculation.replace(restoreValuesBetweenDoubleQuotesRegex, `"$2${token}$4"`);
-    return calculation;
+export function replaceTokensWithPath(code, name, path) {
+    const previousRegex = new RegExp(`\\b\\.${name}\\b`, "g");
+    const nameRegEx = new RegExp(`(?!'|")\\b${name}\\b(?!'|")`, "g");
+    const restorePreviousRegex = new RegExp(`\\b\\._${name}\\b`, "g");
+    const restoreValuesBetweenSingleQuotesRegex = new RegExp(`\('\)\\b\(\[^'\]*\)\(bom.\)${name}\(\[\^'\]*\)\\b\('\)`, "g");
+    const restoreValuesBetweenDoubleQuotesRegex = new RegExp(`\("\)\\b\(\[^"\]*\)\(bom.\)${name}\(\[\^"\]*\)\\b\("\)`, "g");
+    code = code.replace(previousRegex, `._${name}`);
+    code = code.replace(nameRegEx, `${path}`);
+    code = code.replace(restorePreviousRegex, `.${name}`);
+    code = code.replace(restoreValuesBetweenSingleQuotesRegex, `'$2${name}$4'`);
+    code = code.replace(restoreValuesBetweenDoubleQuotesRegex, `"$2${name}$4"`);
+    return code;
 }
 
 export function tokenizeString(input: string) {
@@ -75,7 +75,7 @@ export enum DecisionObjectType {
 }
 
 export enum ConditionTypeEnum {
-    Boolean = "Boolean",
+    Boolean = "Expression",
     LessThan = "LessThan",
     LessThanOrEqualTo = "LessThanOrEqualTo",
     GreaterThan = "GreaterThan",
@@ -85,7 +85,7 @@ export enum ConditionTypeEnum {
 }
 
 export enum DataTypeEnum {
-    Unknown = "Unknown",
+    Any = "Unknown",
     String = "String",
     Integer = "Integer",
     Boolean = "Boolean",
@@ -184,28 +184,30 @@ SAMPLEDATA[DataTypeEnum.Date] = new Date();
 SAMPLEDATA[DataTypeEnum.Decimal] = 3.142;
 SAMPLEDATA[DataTypeEnum.Integer] = 7;
 SAMPLEDATA[DataTypeEnum.Enum] = "Enumeration";
-SAMPLEDATA[DataTypeEnum.Unknown] = undefined;
+SAMPLEDATA[DataTypeEnum.Any] = undefined;
 
 export interface IDataPoint {
+    name?: string;
     label?: string;
     dataType?: DataTypeEnum;
-    token: string;
-    relativePath?: string;
-    definition?: string;
+    path?: string;
+    doc?: string;
     mockValue?: string;
     enumerationSet?: string;
+    id?: string;
 }
 
 abstract class DataPointBase implements IDataPoint {
+    name: string;
     label?: string;
-    dataType: DataTypeEnum = DataTypeEnum.Unknown;
-    token: string;
-    relativePath?: string;
-    definition?: string;
+    dataType: DataTypeEnum = DataTypeEnum.Any;
+    path?: string;
+    doc?: string;
     mockValue?: string;
     enumerationSet?: string;
+    id?: string;
     getFullPath(excludeRoot = false): string {
-        let path = this.relativePath;
+        let path = this.path;
         let root = this.getParent();
         while (root) {
             path = root.parentName + "." + path;
@@ -223,17 +225,16 @@ abstract class DataPointBase implements IDataPoint {
         for (const propName in jsonObj) {
             this[propName] = jsonObj[propName];
         }
-        this.label = this.label || this.token;
-        this.relativePath = this.relativePath || this.token;
+        this.label = this.label || this.name;
+        this.path = this.path || this.name;
         this.dataType = this.dataType !== undefined ? this.dataType : DataTypeEnum.Decimal;
-        this.definition = this.definition || `This is a ${this.token} of type ${DataTypeEnum[this.dataType]} with default value of ${this.mockValue}`;
+        this.doc = this.doc || `This is a ${this.name} of type ${DataTypeEnum[this.dataType]} with default value of ${this.mockValue}`;
     }
 }
 
 export interface IOutput extends IInput {
     ruleBehaviour?: RuleBehaviour;
-    mockValue?: string;
-    calculation?: string;
+    code?: string;
     rawValue?: boolean;
     inputMappings?: {From: string, To: string}[];
     conditions?: ICondition[];
@@ -242,7 +243,7 @@ export interface IOutput extends IInput {
 
 export class Output extends DataPointBase implements IOutput {
     decisionObject?: RuleSet | MultiAxisTable;
-    calculation?: string;
+    code?: string;
     rawValue ? = false;
     inputMappings?: {From: string, To: string}[];
     conditions: ICondition[] = [];
@@ -253,7 +254,7 @@ export class Output extends DataPointBase implements IOutput {
         this.getParent = () => {
             return parent;
         };
-        this.token = tokenizeString(this.token);
+        this.name = tokenizeString(this.name);
         this.conditions = [];
         if (!!jsonObj.conditions) {
             jsonObj.conditions.forEach((condition) => {
@@ -261,42 +262,44 @@ export class Output extends DataPointBase implements IOutput {
                 this.addCondition(params);
             });
         }
-        if (this.calculation) {
+        if (this.code) {
             assert(
-                replaceTokensWithPath(this.calculation, this.token, `bom.${this.token}`) === this.calculation,
-                `Calculation cannot refer to itself for token "${this.token}" with "bom.${this.token}":
-Calculation:
+                replaceTokensWithPath(this.code, this.name, `bom.${this.name}`) === this.code,
+                `Code cannot refer to itself for name "${this.name}" with "bom.${this.name}":
+Code:
 =====================
-${this.calculation}
+${this.code}
 =====================
 Replaced:
 =====================
-${replaceTokensWithPath(this.calculation, this.token, `bom.${this.token}`)}"
+${replaceTokensWithPath(this.code, this.name, `bom.${this.name}`)}"
 =====================`,
                 "RULE02");
+        } else {
+            this.code = "result = undefined";
         }
     }
     addCondition(condition: ICondition) {
         const outputCondition = new Condition(this.getParent(), condition);
-        outputCondition.token = `${tokenizeString(outputCondition.token)}`;
-        outputCondition.relativePath = `_conditions.${this.relativePath}_${this.conditions.length + 1}_${outputCondition.token}`;
+        outputCondition.name = `${tokenizeString(outputCondition.name)}`;
+        outputCondition.path = `_conditions.${this.path}_${this.conditions.length + 1}_${outputCondition.name}`;
         this.conditions.push(outputCondition);
         this.getParent().addOutput(outputCondition);
         return outputCondition;
     }
     getRule(): string {
-        let calculation = this.calculation;
-        if (calculation.indexOf("result") === -1) {
-            calculation = `result = ${calculation}`;
+        let code = this.code;
+        if (code.indexOf("result") === -1) {
+            code = `result = ${code}`;
         }
         if (this.conditions.length > 0) {
             const conditions = [];
             this.conditions.forEach((condition) => {
-                conditions.push(condition.token);
+                conditions.push(condition.name);
             });
-            calculation = `if (${conditions.join(" && ")}) {${calculation}}`;
+            code = `if (${conditions.join(" && ")}) {${code}}`;
         }
-        return terser.minify(calculation, {
+        return terser.minify(code, {
             mangle: false,
             parse: {
                 bare_returns: true
@@ -313,9 +316,9 @@ ${replaceTokensWithPath(this.calculation, this.token, `bom.${this.token}`)}"
             }
         }).code;
     }
-    public static findOutput(outputs: Output[], token: string): Output {
+    public static findOutput(outputs: Output[], name: string): Output {
         for (const output of outputs) {
-            if (output.token === token) {
+            if (output.name === name) {
                 return output;
             }
         }
@@ -328,33 +331,33 @@ ${replaceTokensWithPath(this.calculation, this.token, `bom.${this.token}`)}"
                 (this.inputMappings !== undefined, `Missing inputMappings for Decision Object ${decisionObject.name} on output ${this.label}`, "OUTPUT01");
 
             if (decisionObject.decisionObjectType === DecisionObjectType.MultiAxisTable) {
-                decisionObject.parentName = this.relativePath.split(".")[this.relativePath.split(".").length - 1];
+                decisionObject.parentName = this.path.split(".")[this.path.split(".").length - 1];
                 decisionObject = new MultiAxisTable(this.getParent(), decisionObject as IMultiAxisTable);
             } else {
                 decisionObject = new DecisionObject(this.getParent(), decisionObject);
             }
             this.decisionObject = decisionObject;
             this.inputMappings = inputMappings;
-            decisionObject.parentName = this.relativePath;
+            decisionObject.parentName = this.path;
             decisionObject.inputs.forEach((input) => {
-                const tokens = this.inputMappings.filter((inputMapping) => {
-                    return (inputMapping.To === input.token);
+                const namees = this.inputMappings.filter((inputMapping) => {
+                    return (inputMapping.To === input.name);
                 });
                 assert
-                    (tokens.length > 0, `No mapping found for input variable "${input.getFullPath()}" on rule set "${this.getParent().name}.${this.label}"`, "OUTPUT02");
+                    (namees.length > 0, `No mapping found for input variable "${input.getFullPath()}" on rule set "${this.getParent().name}.${this.label}"`, "OUTPUT02");
             });
             this.inputMappings.forEach((mapping) => {
                 const input = decisionObject.getInput(mapping.To);
                 const dataPoint = this.getParent().getDataPoint(mapping.From);
-                const calculation = dataPoint ? dataPoint.getFullPath() : mapping.From;
+                const code = dataPoint ? dataPoint.getFullPath() : mapping.From;
                 const output = new Output(decisionObject, {
-                    token: input.token,
-                    calculation,
+                    name: input.name,
+                    code,
                     dataType: input.dataType,
-                    definition: input.definition,
+                    doc: input.doc,
                     mockValue: input.mockValue,
                     label: input.label,
-                    relativePath: input.relativePath,
+                    path: input.path,
                     ruleBehaviour: RuleBehaviour.Normal
                 });
                 decisionObject.addOutput(output);
@@ -374,7 +377,7 @@ export interface IInput extends IDataPoint {
 }
 
 export class Input  extends DataPointBase implements IInput {
-    constructor(parent: InputsOutputsManager, jsonObj) {
+    constructor(parent: InputsOutputsManager, jsonObj: IInput) {
         super(jsonObj);
         this.getParent = () => {
             return parent;
@@ -390,7 +393,7 @@ interface ICondition extends IOutput {
     to?: string;
     includeFrom?: boolean;
     includeTo?: boolean;
-    token: string;
+    name: string;
     label?: string;
     index?: number;
 }
@@ -404,29 +407,29 @@ class Condition extends Output implements ICondition {
     conditionType: ConditionTypeEnum;
     expression?: string;
     mockValue?: string;
-    calculation: string;
+    code: string;
     rawValue?: boolean;
     label?: string;
     index?: number;
     getRule(): string {
         if (this.conditionType === ConditionTypeEnum.Boolean) {
-            this.calculation = this.expression;
+            this.code = this.expression;
         } else if (this.conditionType === ConditionTypeEnum.LessThan) {
-            this.calculation = `${this.expression} < ${this.number}`;
+            this.code = `${this.expression} < ${this.number}`;
         } else if (this.conditionType === ConditionTypeEnum.LessThanOrEqualTo) {
-            this.calculation = `${this.expression} <= ${this.number}`;
+            this.code = `${this.expression} <= ${this.number}`;
         } else if (this.conditionType === ConditionTypeEnum.GreaterThan) {
-            this.calculation = `${this.expression} > ${this.number}`;
+            this.code = `${this.expression} > ${this.number}`;
         } else if (this.conditionType === ConditionTypeEnum.GreaterThanOrEqualTo) {
-            this.calculation = `${this.expression} >= ${this.number}`;
+            this.code = `${this.expression} >= ${this.number}`;
         } else if (this.conditionType === ConditionTypeEnum.Between) {
             const left = `<${this.includeFrom ? "=" : ""}`;
             const right = `<${this.includeTo ? "=" : ""}`;
-            this.calculation = `${this.from} ${left} ${this.expression} ${right} ${this.to}`;
+            this.code = `${this.from} ${left} ${this.expression} ${right} ${this.to}`;
         } else if (this.conditionType === ConditionTypeEnum.Outside) {
             const left = `<${this.includeFrom ? "=" : ""}`;
             const right = `>${this.includeTo ? "=" : ""}`;
-            this.calculation = `(${this.expression} ${left} ${this.from}) && (${this.expression} ${right} ${this.to})`;
+            this.code = `(${this.expression} ${left} ${this.from}) && (${this.expression} ${right} ${this.to})`;
         }
         return super.getRule();
     }
@@ -475,20 +478,20 @@ class InputsOutputsManager {
         return undefined;
     }
     validateDataPoints() {
-        const tokens = this.getDataPoints()
+        const namees = this.getDataPoints()
             .map((dataPoint) => {
-                return {count: 1, name: dataPoint.token};
+                return {count: 1, name: dataPoint.name};
             })
             .reduce((accumulator, currentValue) => {
                 accumulator[currentValue.name] = (accumulator[currentValue.name] || 0) + currentValue.count;
                 return accumulator;
             }, {});
-        const duplicateTokens = Object.keys(tokens).filter((a) => tokens[a] > 1);
+        const duplicateTokens = Object.keys(namees).filter((a) => namees[a] > 1);
         if (duplicateTokens.length !== 0) {
             jlog(this.outputs);
             jlog(this.inputs);
         }
-        assert(duplicateTokens.length === 0, `Following token(s) are duplicated: '${duplicateTokens.join("', '")}' in BOM of '${this.name}'`, "DO01");
+        assert(duplicateTokens.length === 0, `Following name(es) are duplicated: '${duplicateTokens.join("', '")}' in BOM of '${this.name}'`, "DO01");
         const names = this.getDataPoints()
             .map((dataPoint) => {
                 return {count: 1, name: dataPoint.label};
@@ -501,7 +504,7 @@ class InputsOutputsManager {
         assert(duplicateTokens.length === 0, `Following name(s) are duplicated: '${duplicateNames.join("', '")}' in BOM of '${this.name}'`, "DO02");
         const paths = this.getDataPoints()
             .map((dataPoint) => {
-                return {count: 1, name: dataPoint.relativePath};
+                return {count: 1, name: dataPoint.path};
             })
             .reduce((accumulator, currentValue) => {
                 accumulator[currentValue.name] = (accumulator[currentValue.name] || 0) + currentValue.count;
@@ -535,28 +538,28 @@ class InputsOutputsManager {
         };
         this.inputs.forEach((input, index) => {
             const sampleData = evaluateMockValue(input);
-            const data = addAnnotation ? {sampleData: input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")], documentation: input.definition, dataType: DataTypeEnum[input.dataType.replace("Type", "")]} : input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")];
-            addToBom(bom, `${input.relativePath}`, data);
+            const data = addAnnotation ? {sampleData: input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")], documentation: input.doc, dataType: DataTypeEnum[input.dataType.replace("Type", "")]} : input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")];
+            addToBom(bom, `${input.path}`, data);
         });
         if (includeOutputs) {
             this.outputs.forEach((output, index) => {
                 if (output.hasDecisionObject()) {
                     const dObject = output.getDecisionObject();
                     if (dObject.decisionObjectType === DecisionObjectType.MultiAxisTable) {
-                        const root = output.relativePath.split(".")[0];
+                        const root = output.path.split(".")[0];
                         const subBom = dObject.generateSampleBOM(includeOutputs, addAnnotation)[root];
-                        getAllPaths(output.token, subBom).forEach((path) => {
+                        getAllPaths(output.name, subBom).forEach((path) => {
                             const fullPath = root + "." + path.path.split(".").splice(1).join(".");
                             addToBom(bom, fullPath, path.value);
                         });
                     } else {
-                        addToBom(bom, `${output.relativePath}`, dObject.generateSampleBOM(includeOutputs, addAnnotation));
+                        addToBom(bom, `${output.path}`, dObject.generateSampleBOM(includeOutputs, addAnnotation));
                     }
-                } else if (output.token.indexOf("DecisionTable_") === -1) {
+                } else if (output.name.indexOf("DecisionTable_") === -1) {
                     const sampleData = evaluateMockValue(output);
-                    const data = addAnnotation ? {sampleData: sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")], documentation: output.definition, dataType: DataTypeEnum[output.dataType.replace("Type", "")]} : sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")];
+                    const data = addAnnotation ? {sampleData: sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")], documentation: output.doc, dataType: DataTypeEnum[output.dataType.replace("Type", "")]} : sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")];
                     // console.warn(`Adding to BOM: ${output.getFullPath()} = ${data}`);
-                    addToBom(bom, output.relativePath, data);
+                    addToBom(bom, output.path, data);
                 }
             });
         }
@@ -566,28 +569,28 @@ class InputsOutputsManager {
     schemaVersion() {
         let hash = "";
         this.getDataPoints().forEach((datapoint) => {
-            hash += `${datapoint.relativePath}:${datapoint.dataType}`;
+            hash += `${datapoint.path}:${datapoint.dataType}`;
         });
         return Md5.hashStr(hash).toString();
     }
-    getInput(token: string): Input {
+    getInput(name: string): Input {
         return this.inputs.filter((input) => {
-            return (input.token === token);
+            return (input.name === name);
         })[0];
     }
-    getOutput(token: string): Output {
+    getOutput(name: string): Output {
         return this.outputs.filter((output) => {
-            return (output.token === token);
+            return (output.name === name);
         })[0];
     }
-    getDataPoint(token: string): DataPointBase {
+    getDataPoint(name: string): DataPointBase {
         return this.getDataPoints().filter((dataPoint) => {
-            return (dataPoint.token === token);
+            return (dataPoint.name === name);
         })[0];
     }
     addInput(input: IInput | Input): Input {
         this.inputs.forEach((iInput) => {
-            assert(iInput.token !== input.token, `There's already an input with token ${input.token}"`, "INPUT01");
+            assert(iInput.name !== input.name, `There's already an input with name ${input.name}"`, "INPUT01");
         });
         if (input instanceof Input) {
             this.inputs.push(input);
@@ -600,7 +603,7 @@ class InputsOutputsManager {
     }
     addOutput(output: IOutput | Output): Output {
         this.outputs.forEach((iOutput) => {
-            assert(iOutput.token !== output.token, `There's already an output with token ${output.token}"`, "OUTPUT04");
+            assert(iOutput.name !== output.name, `There's already an output with name ${output.name}"`, "OUTPUT04");
         });
         if (output instanceof Output) {
             this.outputs.push(output);
@@ -669,7 +672,7 @@ class InputBuilder {
     }
     remove() {
         this.decisionObjectBuilder.decisionObject.inputs = this.decisionObjectBuilder.decisionObject.inputs.filter((input) => {
-            return input.token !== this.input.token;
+            return input.name !== this.input.name;
         });
         return this.decisionObjectBuilder;
     }
@@ -681,18 +684,18 @@ class OutputBuilder extends InputBuilder {
     }
     using(calculator: string | DecisionObject) {
         if (typeof calculator === "string") {
-            this.usingCalculation(calculator);
+            this.usingCode(calculator);
         } else {
             this.usingDecisionObject(calculator);
         }
         return this;
     }
-    usingCalculation(calculation: string) {
-        this.output.calculation = calculation;
+    usingCode(code: string) {
+        this.output.code = code;
         return this;
     }
-    withCalculation(calculation: string) {
-        return this.usingCalculation(calculation);
+    withCode(code: string) {
+        return this.usingCode(code);
     }
     usingDecisionObject(decisionObject: DecisionObject) {
         this.output.decisionObject = decisionObject;
@@ -712,7 +715,7 @@ class OutputBuilder extends InputBuilder {
             expression,
             conditionType: ConditionTypeEnum.Boolean,
             label: withLabel,
-            token: !!withLabel ? tokenizeString(withLabel) : tokenizeString(expression) + "IsTrue"
+            name: !!withLabel ? tokenizeString(withLabel) : tokenizeString(expression) + "IsTrue"
         });
         this.output.addCondition(condition);
         return this;
@@ -728,20 +731,20 @@ class DecisionObjectBuilder {
     withInput(input: string | Input) {
         if (typeof input === "string") {
             const path = input.split(".");
-            const token = path[path.length - 1];
-            input = this.decisionObject.getInput(token) || this.decisionObject.addInput({token, relativePath: input});
+            const name = path[path.length - 1];
+            input = this.decisionObject.getInput(name) || this.decisionObject.addInput({name, path: input});
         } else {
-            input = this.decisionObject.getInput(input.token) || this.decisionObject.addInput(input);
+            input = this.decisionObject.getInput(input.name) || this.decisionObject.addInput(input);
         }
         return new InputBuilder(input, this);
     }
     withOutput(output: string | Output) {
         if (typeof output === "string") {
             const path = output.split(".");
-            const token = path[path.length - 1];
-            output = this.decisionObject.getOutput(token) || this.decisionObject.addOutput({token, relativePath: output});
+            const name = path[path.length - 1];
+            output = this.decisionObject.getOutput(name) || this.decisionObject.addOutput({name, path: output});
         } else {
-            output = this.decisionObject.getOutput(output.token) || this.decisionObject.addOutput(output);
+            output = this.decisionObject.getOutput(output.name) || this.decisionObject.addOutput(output);
         }
         return new OutputBuilder(output, this);
     }
@@ -771,7 +774,7 @@ export class DecisionObject extends InputsOutputsManager implements IDecisionObj
     ruleContext?: RuleContext;
     public getInputNames(): string[] {
         return this.inputs.map((input) => {
-            return input.relativePath;
+            return input.path;
         });
     }
     constructor(parent: InputsOutputsManager, jsonObj: IDecisionObject) {
@@ -792,10 +795,12 @@ export class DecisionObject extends InputsOutputsManager implements IDecisionObj
 
         // Initialize Conditions + Outouts
         this.outputs = [];
-        jsonObj.outputs.forEach((output, index) => {
-            const newOutput = new Output(this, output);
-            this.addOutput(newOutput);
-        });
+        if (!!jsonObj.outputs) {
+            jsonObj.outputs.forEach((output, index) => {
+                const newOutput = new Output(this, output);
+                this.addOutput(newOutput);
+            });
+        }
         if (jsonObj.decisionObjectType === DecisionObjectType.RuleSet) {
             this.validateDataPoints();
         }
@@ -825,9 +830,9 @@ export class DecisionObject extends InputsOutputsManager implements IDecisionObj
     generateReadableRules() {
         const rules = [];
         this.outputs.forEach((output) => {
-            // const x = `${output.relativePath !=== output.token ? ' It will be saved under ${output.relativePath}' : ''}`;
-            const conditions = output.conditions.map((condition) => {return condition.token; }).join(" and ");
-            rules.push(`${output.label}${output.label !== output.token ? `known as ${output.token} ` : ""} is defined as ${output.calculation}${output.relativePath !== output.token ? `It will be saved under ${output.relativePath}` : ""}` +
+            // const x = `${output.path !=== output.name ? ' It will be saved under ${output.path}' : ''}`;
+            const conditions = output.conditions.map((condition) => {return condition.name; }).join(" and ");
+            rules.push(`${output.label}${output.label !== output.name ? `known as ${output.name} ` : ""} is defined as ${output.code}${output.path !== output.name ? `It will be saved under ${output.path}` : ""}` +
                 (conditions ? ` when ${conditions} is true.` : "."));
         });
         return rules;
@@ -864,26 +869,26 @@ export class DecisionObject extends InputsOutputsManager implements IDecisionObj
                     });
                 });
                 const rule = {
-                    name: output.relativePath,
+                    name: output.path,
                     code: "//Sub Rules",
                     behaviour: RuleBehaviour.Never
                 };
-                assert(rule.name, `Rule doesn't have a name using '${output.relativePath}'`, "RULE03");
+                assert(rule.name, `Rule doesn't have a name using '${output.path}'`, "RULE03");
                 rules.rules.push(rule);
             } else {
                 const rule = {
-                    name: output.relativePath,
+                    name: output.path,
                     code: output.getRule(),
                     behaviour: output.ruleBehaviour
                 };
-                assert(rule.name, `Rule doesn't have a name using '${output.relativePath}'`, "RULE03");
+                assert(rule.name, `Rule doesn't have a name using '${output.path}'`, "RULE03");
                 rules.rules.push(rule);
             }
         });
         if (!this.getParent()) {
             rules.rules.forEach((rule) => {
                 this.getDataPoints().forEach((dataPoint) => {
-                    rule.code = replaceTokensWithPath(rule.code, dataPoint.token, `${dataPoint.getFullPath()}`);
+                    rule.code = replaceTokensWithPath(rule.code, dataPoint.name, `${dataPoint.getFullPath()}`);
                 });
             });
             const usedVariables = {};
@@ -963,39 +968,39 @@ export class MultiAxisTable extends DecisionObject implements IMultiAxisTable {
             this.purpose = tokenizeString(this.purpose);
         }
         this.decisionObjectType = DecisionObjectType.MultiAxisTable;
-        const cellCalculation = this.generateCellCalculation();
-        const globalCalculation = `
+        const cellCode = this.generateCellCode();
+        const globalCode = `
         
         result = (function() {
-        ${cellCalculation}
+        ${cellCode}
         return result;
         })()`;
 
         const purpose = this.purpose || "";
         const outputBase = new Output(this, {
-            calculation: `${globalCalculation}`,
-            token: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            code: `${globalCode}`,
+            name: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             dataType: DataTypeEnum.Object,
-            relativePath: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            path: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             decisionObject: undefined,
             rawValue: false,
             inputMappings: [],
             conditions: [],
-            definition: "",
+            doc: "",
             mockValue: undefined,
             label: "Table",
             ruleBehaviour: RuleBehaviour.Normal
         });
         this.outputs.forEach((output) => {
-            if (output.token.indexOf("DecisionTable_") === -1) {
-                output.calculation = `result = ${outputBase.token}.${output.token}`;
+            if (output.name.indexOf("DecisionTable_") === -1) {
+                output.code = `result = ${outputBase.name}.${output.name}`;
             }
         });
         const decisionTableOutput = new Output(this, outputBase);
         this.addOutput(decisionTableOutput);
     }
 
-    private generateCellCalculation() {
+    private generateCellCode() {
         let code = `var result = {};
         var evaluate = function(value) {
             var r1_ = value && (value.call || value) && (value.call && value.call());
@@ -1031,40 +1036,40 @@ export class MultiAxisTable extends DecisionObject implements IMultiAxisTable {
             result.Match = {Column: {Index: ${cell.columnNumber - 1}, Name: "${this.columns[cell.columnNumber - 1].name}"}, Row: {Index: ${cell.rowNumber - 1}, Name: "${this.rows[cell.rowNumber - 1].name}"}};
             `;
             this.outputs.forEach((output, outputIndex) => {
-                const cellOutput = cell.outputs.filter((cellOutput) => {return cellOutput.token === output.token; })[0];
-                const cellValue = cellOutput ? functionize(cellOutput.calculation, true, cellOutput.rawValue) : "void 0";
+                const cellOutput = cell.outputs.filter((cellOutput) => {return cellOutput.name === output.name; })[0];
+                const cellValue = cellOutput ? functionize(cellOutput.code, true, cellOutput.rawValue) : "void 0";
                 code += `
-                var cell${output.token} = ${cellValue};
-                cell${output.token} = evaluate(${cellValue});
+                var cell${output.name} = ${cellValue};
+                cell${output.name} = evaluate(${cellValue});
                 `;
             });
             this.rows[cell.rowNumber - 1].outputs.forEach((output, outputIndex) => {
-                const columnFn = functionize(output.calculation, true, output.rawValue);
+                const columnFn = functionize(output.code, true, output.rawValue);
                     code += `
-                if (cell${output.token} === void 0) {
+                if (cell${output.name} === void 0) {
                     var column = ${columnFn};
-                    cell${output.token} = evaluate(column);                    
+                    cell${output.name} = evaluate(column);                    
                 }
                 `;
             });
             this.columns[cell.columnNumber - 1].outputs.forEach((output, outputIndex) => {
-                const columnFn = functionize(output.calculation, true, output.rawValue);
+                const columnFn = functionize(output.code, true, output.rawValue);
                 code += `
-                if (cell${output.token} === void 0) {
+                if (cell${output.name} === void 0) {
                     var column = ${columnFn};
-                    cell${output.token} = evaluate(column);                    
+                    cell${output.name} = evaluate(column);                    
                 }
                 `;
             });
             this.outputs.forEach((output) => {
-                const tableFn = functionize(output.calculation, true, output.rawValue);
+                const tableFn = functionize(output.code, true, output.rawValue);
                 code += `
-                if (cell${output.token} === void 0) {
+                if (cell${output.name} === void 0) {
                     //raw=${output.rawValue}
                     var table = ${tableFn};
-                    cell${output.token} = evaluate(table);
+                    cell${output.name} = evaluate(table);
                 }
-                result["${output.token}"] = cell${output.token};
+                result["${output.name}"] = cell${output.name};
                 `;
             });
 
@@ -1075,17 +1080,17 @@ export class MultiAxisTable extends DecisionObject implements IMultiAxisTable {
         code += ` {
             `;
         this.outputs.forEach((output) => {
-            const tableFn = functionize(output.calculation, true, output.rawValue);
+            const tableFn = functionize(output.code, true, output.rawValue);
             code += `
                 result.Match = {NoMatch: true};
-                var table${output.token} = ${tableFn};
-                result["${output.token}"] = evaluate(table${output.token});
+                var table${output.name} = ${tableFn};
+                result["${output.name}"] = evaluate(table${output.name});
                 `;
         });
 
         code += `}
-        result.TableName = "${(this.name && this.name.replace(/"/g, '\"')) || "Unknown"}";
-        result.Purpose = "${(this.purpose && this.purpose.replace(/"/g, '\"')) || "Unknown"}";
+        result.TableName = "${(this.name && this.name.replace(/"/g, '\"')) || "Any"}";
+        result.Purpose = "${(this.purpose && this.purpose.replace(/"/g, '\"')) || "Any"}";
         `;
         return code;
     }
@@ -1105,8 +1110,8 @@ export class SingleAxisTable extends DecisionObject implements ISingleAxisTable 
     addEntry() {
         const conditions = this.inputs.map((input) => {
             return new Condition(undefined, {
-                token: input.token,
-                label: input.token,
+                name: input.name,
+                label: input.name,
                 conditionType: ConditionTypeEnum.Boolean,
                 expression: input.dataType === DataTypeEnum.Enum ? this.ruleContext.getEnumerationSet(input.enumerationSet).values[0].value : undefined
             });
@@ -1114,7 +1119,7 @@ export class SingleAxisTable extends DecisionObject implements ISingleAxisTable 
         const outputs = this.outputs.map((output) => {
             const newOutuput = new Output(undefined, output);
             if (output.dataType === DataTypeEnum.Enum) {
-                output.calculation = `"${this.ruleContext.getEnumerationSet(output.enumerationSet).values[0].value}"`;
+                output.code = `"${this.ruleContext.getEnumerationSet(output.enumerationSet).values[0].value}"`;
             }
             return newOutuput;
         });
@@ -1136,43 +1141,43 @@ export class SingleAxisTable extends DecisionObject implements ISingleAxisTable 
             assert(((entry.conditions.length === this.inputs.length)),
                 `Not enough conditions for entry #${entryIndex}, need ${this.inputs.length}`, "ENTRY01");
             this.inputs.forEach((input) => {
-                assert(((entry.conditions.filter((condition) => {return condition.token === input.token; }).length > 0)),
-                    `Missing the condition for ${input.token} on entry #${entryIndex}`, "ENTRY01");
+                assert(((entry.conditions.filter((condition) => {return condition.name === input.name; }).length > 0)),
+                    `Missing the condition for ${input.name} on entry #${entryIndex}`, "ENTRY01");
             });
             this.outputs.forEach((output) => {
-                assert((entry.outputs.length === this.outputs.length) && (entry.outputs.filter((entryOutput) => {return output.token === entryOutput.token; }).length > 0),
-                    `Missing an output "${output.token}" for entry #${entryIndex}`, "ENTRY02");
+                assert((entry.outputs.length === this.outputs.length) && (entry.outputs.filter((entryOutput) => {return output.name === entryOutput.name; }).length > 0),
+                    `Missing an output "${output.name}" for entry #${entryIndex}`, "ENTRY02");
             });
         });
         this.outputs.forEach((output) => {
-            output.calculation = "";
+            output.code = "";
         });
         // Create Table Outputs
-        const tableCalculation = this.generateTableCode();
-        const globalCalculation = `
+        const tableCode = this.generateTableCode();
+        const globalCode = `
         result = (function() {
-        ${tableCalculation}
+        ${tableCode}
         return result;
         })()`;
 
         const purpose = this.purpose || "";
         const outputBase = new Output(this, {
-            calculation: `${globalCalculation}`,
-            token: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            code: `${globalCode}`,
+            name: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             dataType: DataTypeEnum.Object,
-            relativePath: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            path: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             decisionObject: undefined,
             rawValue: false,
             inputMappings: [],
             conditions: [],
-            definition: "",
+            doc: "",
             mockValue: undefined,
             label: "Table",
             ruleBehaviour: RuleBehaviour.Normal
         });
         this.outputs.forEach((output) => {
-            if (output.token.indexOf("DecisionTable_") === -1) {
-                output.calculation = `result = ${outputBase.token}.${output.token}`;
+            if (output.name.indexOf("DecisionTable_") === -1) {
+                output.code = `result = ${outputBase.name}.${output.name}`;
             }
         });
         const decisionTableOutput = new Output(this, outputBase);
@@ -1183,10 +1188,10 @@ export class SingleAxisTable extends DecisionObject implements ISingleAxisTable 
         return `var result = {"TableName": "${this.name}"};
         ${this.entries.map((entry, index) => {
             return `if (${entry.conditions.map((condition) => {
-                return `${condition.token} === ${condition.expression}`;
+                return `${condition.name} === ${condition.expression}`;
             }).join(" && ")}) {
                 ${entry.outputs.map((output) => {
-                    return `result['${output.token}'] = ${functionize(output.calculation, true)}();`;
+                    return `result['${output.name}'] = ${functionize(output.code, true)}();`;
                 }).join("\n")}
                 result["Match"] = {"Name": "${entry.name}", "Index": ${index}};
             }`;
@@ -1208,34 +1213,34 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 //     decisionObjectType: DecisionObjectType.RuleSet,
 //     inputs: [
 //         {
-//             token: "token",
+//             name: "name",
 //             dataType: DataTypeEnum.String,
-//             definition: "definition",
+//             doc: "doc",
 //             enumerationSet: "enumeration",
 //             label: "label",
 //             mockValue: "mockvalue",
-//             relativePath: 'path'
+//             path: 'path'
 //         }
 //     ],
 //     name: "name",
 //     outputs: [
 //         {
-//             token: "token",
+//             name: "name",
 //             dataType: DataTypeEnum.String,
-//             definition: "definition",
+//             doc: "doc",
 //             enumerationSet: "enumeration",
 //             label: "label",
 //             mockValue: "mockvalue",
-//             relativePath: 'path',
-//             calculation: "calculation",
+//             path: 'path',
+//             code: "code",
 //             conditions: [
 //                 {
-//                     calculation: "calculation",
+//                     code: "code",
 //                     to: "0.0",
 //                     from: "0.0",
 //                     number: "0.0",
-//                     token: "token",
-//                     conditionType: ConditionTypeEnum.Boolean
+//                     name: "name",
+//                     conditionType: ConditionTypeEnum.Expression
 //                 }
 //             ],
 //             decisionObject: null,
@@ -1277,7 +1282,7 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 // };
 // //
 // const ttt = new RuleSet(null,
-//     {"decisionObjectType":"RuleSet","inputs":[{"token":"totalSales","dataType":"DecimalType","label":"Total Sales","relativePath":"TotalSales"},{"token":"totalAssets","dataType":"DecimalType","label":"Total Assets","relativePath":"TotalAssets"},{"token":"accountReceivable","dataType":"DecimalType","label":"Account Receivable","relativePath":"AccountReceivable"},{"token":"inventory","dataType":"DecimalType","label":"Inventory","relativePath":"Inventory"},{"token":"accountsPayable","dataType":"DecimalType","label":"Accounts Payable","relativePath":"AccountsPayable"},{"token":"purchases","dataType":"DecimalType","label":"Purchases","relativePath":"Purchases"},{"token":"costOfGoodsSold","dataType":"DecimalType","label":"Cost Of Goods Sold","relativePath":"CostOfGoodsSold"}],"name":"Activity","outputs":[{"token":"assetTurnover","dataType":"DecimalType","label":"Asset Turnover","relativePath":"AssetTurnover","calculation":"result = Math.round((totalSales / totalAssets) * 1000) / 1000","conditions":[]},{"token":"inventoryTurnover","dataType":"DecimalType","label":"Inventory Turnover","relativePath":"InventoryTurnover","calculation":"result = Math.round((costOfGoodsSold / inventory) * 1000) / 1000","conditions":[]},{"token":"daysOnInventory","dataType":"DecimalType","label":"Days On Inventory","relativePath":"DaysOnInventory","calculation":"result = Math.round(( 365 / inventoryTurnover) * 1000) / 1000","conditions":[]},{"token":"aPPaymentPeriod","dataType":"DecimalType","label":"A/P Payment Period","relativePath":"aPPaymentPeriod","calculation":"result = Math.round(((accountsPayable - purchases)*365) * 1000) / 1000","conditions":[]},{"token":"aRCollectionPeriod","dataType":"DecimalType","label":"A/R Collection Period","relativePath":"ARCollectionPeriod","calculation":"result = Math.round(((accountReceivable / totalSales) * 365) * 1000) / 1000","conditions":[]},{"token":"receivablesTurnover","dataType":"DecimalType","label":"Receivables Turnover","relativePath":"ReceivablesTurnover","calculation":"result = Math.round((totalSales / accountReceivable) * 1000) / 1000","conditions":[]},{"token":"daysOfSalesOutstanding","dataType":"DecimalType","label":"Days Of Sales Outstanding","relativePath":"DaysOfSalesOutstanding","calculation":"result = Math.round((365 / receivablesTurnover) * 1000) / 1000","conditions":[]}],"ruleContext":{"enumerations":[],"name":"Security2.png"}}
+//     {"decisionObjectType":"RuleSet","inputs":[{"name":"totalSales","dataType":"DecimalType","label":"Total Sales","path":"TotalSales"},{"name":"totalAssets","dataType":"DecimalType","label":"Total Assets","path":"TotalAssets"},{"name":"accountReceivable","dataType":"DecimalType","label":"Account Receivable","path":"AccountReceivable"},{"name":"inventory","dataType":"DecimalType","label":"Inventory","path":"Inventory"},{"name":"accountsPayable","dataType":"DecimalType","label":"Accounts Payable","path":"AccountsPayable"},{"name":"purchases","dataType":"DecimalType","label":"Purchases","path":"Purchases"},{"name":"costOfGoodsSold","dataType":"DecimalType","label":"Cost Of Goods Sold","path":"CostOfGoodsSold"}],"name":"Activity","outputs":[{"name":"assetTurnover","dataType":"DecimalType","label":"Asset Turnover","path":"AssetTurnover","code":"result = Math.round((totalSales / totalAssets) * 1000) / 1000","conditions":[]},{"name":"inventoryTurnover","dataType":"DecimalType","label":"Inventory Turnover","path":"InventoryTurnover","code":"result = Math.round((costOfGoodsSold / inventory) * 1000) / 1000","conditions":[]},{"name":"daysOnInventory","dataType":"DecimalType","label":"Days On Inventory","path":"DaysOnInventory","code":"result = Math.round(( 365 / inventoryTurnover) * 1000) / 1000","conditions":[]},{"name":"aPPaymentPeriod","dataType":"DecimalType","label":"A/P Payment Period","path":"aPPaymentPeriod","code":"result = Math.round(((accountsPayable - purchases)*365) * 1000) / 1000","conditions":[]},{"name":"aRCollectionPeriod","dataType":"DecimalType","label":"A/R Collection Period","path":"ARCollectionPeriod","code":"result = Math.round(((accountReceivable / totalSales) * 365) * 1000) / 1000","conditions":[]},{"name":"receivablesTurnover","dataType":"DecimalType","label":"Receivables Turnover","path":"ReceivablesTurnover","code":"result = Math.round((totalSales / accountReceivable) * 1000) / 1000","conditions":[]},{"name":"daysOfSalesOutstanding","dataType":"DecimalType","label":"Days Of Sales Outstanding","path":"DaysOfSalesOutstanding","code":"result = Math.round((365 / receivablesTurnover) * 1000) / 1000","conditions":[]}],"ruleContext":{"enumerations":[],"name":"Security2.png"}}
 //     );
 //
 // // jlog(ttt.generateSampleBOM());
@@ -1306,16 +1311,16 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 //             name: ""
 //         },
 //         outputs: [{
-//             dataType: DataTypeEnum.Boolean,
-//             token: "IsOfAge",
-//             calculation: "false"
+//             dataType: DataTypeEnum.Expression,
+//             name: "IsOfAge",
+//             code: "false"
 //         }],
 //         inputs: [{
-//             token: "Age",
+//             name: "Age",
 //             dataType: DataTypeEnum.Integer,
 //             mockValue: "21"
 //         },{
-//             token: "Gender",
+//             name: "Gender",
 //             dataType: DataTypeEnum.String,
 //             mockValue: "'Male'"
 //         }],
@@ -1326,36 +1331,36 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 //             columnNumber: 0,
 //             rowNumber: 0,
 //             outputs: [{
-//                 dataType: DataTypeEnum.Boolean,
-//                 token: "IsOfAge",
-//                 calculation: "true",
+//                 dataType: DataTypeEnum.Expression,
+//                 name: "IsOfAge",
+//                 code: "true",
 //                 rawValue: false
 //             }]
 //         }, {
 //             columnNumber: 1,
 //             rowNumber: 0,
 //             outputs: [{
-//                 dataType: DataTypeEnum.Boolean,
-//                 token: "IsOfAge",
-//                 calculation: "true",
+//                 dataType: DataTypeEnum.Expression,
+//                 name: "IsOfAge",
+//                 code: "true",
 //                 rawValue: true
 //             }]
 //         }, {
 //             columnNumber: 0,
 //             rowNumber: 1,
 //             outputs: [{
-//                 dataType: DataTypeEnum.Boolean,
-//                 token: "IsOfAge",
-//                 calculation: "true",
+//                 dataType: DataTypeEnum.Expression,
+//                 name: "IsOfAge",
+//                 code: "true",
 //                 rawValue: true
 //             }]
 //         }, {
 //             columnNumber: 1,
 //             rowNumber: 1,
 //             outputs: [{
-//                 dataType: DataTypeEnum.Boolean,
-//                 token: "IsOfAge",
-//                 calculation: "true",
+//                 dataType: DataTypeEnum.Expression,
+//                 name: "IsOfAge",
+//                 code: "true",
 //                 rawValue: true
 //             }]
 //         }],
@@ -1364,8 +1369,8 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 //             outputs: [],
 //             conditions: [{
 //                 expression: "Age > 18",
-//                 conditionType: ConditionTypeEnum.Boolean,
-//                 token: "AgeGreaterThan18",
+//                 conditionType: ConditionTypeEnum.Expression,
+//                 name: "AgeGreaterThan18",
 //                 label: "Age Greater Than 18"
 //             }],
 //             name: "Age > 18"
@@ -1373,23 +1378,23 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 //             outputs: [],
 //             conditions: [{
 //                 expression: "Age > 21",
-//                 conditionType: ConditionTypeEnum.Boolean,
-//                 token: "AgeGreaterThan21",
+//                 conditionType: ConditionTypeEnum.Expression,
+//                 name: "AgeGreaterThan21",
 //                 label: "Age Greater Than 21"
 //             }],
 //             name: "Age > 21"
 //         }],
 //         rows: [{
 //             outputs: [{
-//                 dataType: DataTypeEnum.Boolean,
-//                 token: "IsOfAge",
-//                 calculation: "true",
+//                 dataType: DataTypeEnum.Expression,
+//                 name: "IsOfAge",
+//                 code: "true",
 //                 rawValue: true
 //             }],
 //             conditions: [{
 //                 expression: "Gender === 'Male'",
-//                 conditionType: ConditionTypeEnum.Boolean,
-//                 token: "Male",
+//                 conditionType: ConditionTypeEnum.Expression,
+//                 name: "Male",
 //                 label: "GenderIsMale"
 //             }],
 //             name: "Gender = Male"
@@ -1397,8 +1402,8 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 //             outputs: [],
 //             conditions: [{
 //                 expression: "Gender === 'Female'",
-//                 conditionType: ConditionTypeEnum.Boolean,
-//                 token: "Female",
+//                 conditionType: ConditionTypeEnum.Expression,
+//                 name: "Female",
 //                 label: "GenderIsFemale"
 //             }],
 //             name: "Gender = Female"
@@ -1426,11 +1431,11 @@ export function getAllPaths(root, obj, result = []): {path: string, value: any}[
 // jlog(table);
 
 // const appropriateAge = new MultiAxisTable(null,
-//     {"inputs":[{"dataType":"IntegerType","token":"Age","label":"Age","relativePath":"Age"},{"dataType":"EnumerationType","token":"Gender","label":"Gender","relativePath":"Gender"}],"outputs":[],"version":"0.0.0.draft","ruleContext":{"enumerations":[{"name":"Gender","values":[{"value":"Male"},{"value":"Female"}]}]},"name":"Is Of Age","decisionObjectType":"DecisionTable","cells":[{"columnNumber":1,"rowNumber":1,"outputs":[]},{"columnNumber":1,"rowNumber":1,"outputs":[]},{"columnNumber":1,"rowNumber":1,"outputs":[]},{"columnNumber":1,"rowNumber":2,"outputs":[]}],"columns":[{"outputs":[],"conditions":[{"expression":"(\r\n)","conditionType":"Boolean_Expression","label":"Male"}],"name":"H1"},{"outputs":[],"conditions":[],"name":"H0"}],"rows":[{"outputs":[],"conditions":[{"expression":"(\r\n)","conditionType":"Boolean_Expression","label":"Older than 18"}],"name":"V1"},{"outputs":[],"conditions":[{"expression":"(\r\n)","conditionType":"Boolean_Expression","label":"Age > 21"}],"name":"V2"}]}
+//     {"inputs":[{"dataType":"IntegerType","name":"Age","label":"Age","path":"Age"},{"dataType":"EnumerationType","name":"Gender","label":"Gender","path":"Gender"}],"outputs":[],"version":"0.0.0.draft","ruleContext":{"enumerations":[{"name":"Gender","values":[{"value":"Male"},{"value":"Female"}]}]},"name":"Is Of Age","decisionObjectType":"DecisionTable","cells":[{"columnNumber":1,"rowNumber":1,"outputs":[]},{"columnNumber":1,"rowNumber":1,"outputs":[]},{"columnNumber":1,"rowNumber":1,"outputs":[]},{"columnNumber":1,"rowNumber":2,"outputs":[]}],"columns":[{"outputs":[],"conditions":[{"expression":"(\r\n)","conditionType":"Boolean_Expression","label":"Male"}],"name":"H1"},{"outputs":[],"conditions":[],"name":"H0"}],"rows":[{"outputs":[],"conditions":[{"expression":"(\r\n)","conditionType":"Boolean_Expression","label":"Older than 18"}],"name":"V1"},{"outputs":[],"conditions":[{"expression":"(\r\n)","conditionType":"Boolean_Expression","label":"Age > 21"}],"name":"V2"}]}
 //     )
 
 //
-// const eligibility = new MultiAxisTable(undefined, {inputs: [{dataType: "DecimalType", token: "Age", label: "Age", relativePath: "Age", guid: "8444249301322681"}, {dataType: "EnumerationType", token: "Gender", label: "Gender", relativePath: "Gender", guid: "8444249301322682"}], outputs: [{dataType: "BooleanType", calculation: "undefined", token: "Eligible", relativePath: "Eligible", conditions: [], label: "false", guid: "7318349394480257"}], version: "0.2.0.draft", ruleContext: {name: "noun_Coffee_472911.png", enumerations: [{name: "DrinkType", values: [{value: "Mocha"}, {value: "Flatwhite"}, {value: "Americano"}, {value: "Cappuccino"}]}, {name: "Products", values: [{label: "Mocha", value: "Mocha"}, {label: "Flatwhite", value: "Flatwhite"}, {label: "Americano", value: "Americano"}]}, {name: "Sizes", values: [{value: "Picollo"}, {value: "Mezo"}, {value: "Grande"}]}, {name: "Gender", values: [{value: "Male"}, {value: "Female"}]}]}, name: "OfAge", decisionObjectType: "DecisionTable", cells: [{columnNumber: 1, rowNumber: 1, guid: "1407374883557482", outputs: []}, {columnNumber: 1, rowNumber: 2, guid: "1407374883557481", outputs: []}, {columnNumber: 2, rowNumber: 1, guid: "1407374883557484", outputs: [{dataType: "BooleanType", token: "Eligible", calculation: "true", guid: "12384898975271873", active: true}]}, {columnNumber: 2, rowNumber: 2, guid: "1407374883557483", outputs: [{dataType: "BooleanType", token: "Eligible", calculation: "false", guid: "12384898975271872", active: true}]}, {columnNumber: 3, rowNumber: 1, guid: "1407374883557882", outputs: []}, {columnNumber: 3, rowNumber: 2, guid: "1407374883557881", outputs: []}], columns: [{guid: "6755399441059845", outputs: [{dataType: "BooleanType", token: "Eligible", calculation: "false", guid: "12384898975271865", active: true}], conditions: [{expression: "Age < 19", conditionType: "Boolean_Expression", label: "Age < 19", guid: "17169973579351717", index: 1}], name: "Younger than 19", index: 1}, {guid: "6755399441059846", outputs: [], conditions: [{expression: "(18 < Age) && (Age < 21)", conditionType: "Boolean_Expression", label: "18 < Age < 21", guid: "17169973579351817", index: 1}], name: "19-20", index: 2}, {guid: "6755399441060245", outputs: [{dataType: "BooleanType", token: "Eligible", calculation: "true", guid: "12384898975271867", active: true}], conditions: [{expression: "Age > 20", conditionType: "Boolean_Expression", label: "Age > 20", guid: "17169973579351818", index: 1}], name: "Older than 20", index: 3}], rows: [{guid: "14073748835536702", outputs: [{dataType: "BooleanType", token: "Eligible", calculation: "true", guid: "12384898975271869", active: true}], conditions: [{expression: "Gender === 'Female'", conditionType: "Boolean_Expression", label: "Gender === 'Female'", guid: "17169973579351819", index: 1}], name: "Women", index: 1}, {guid: "14073748835536701", outputs: [], conditions: [{expression: "Gender === 'Male'", conditionType: "Boolean_Expression", label: "Gender === 'Male'", guid: "17169973579351820", index: 1}], name: "Men", index: 2}]});
+// const eligibility = new MultiAxisTable(undefined, {inputs: [{dataType: "DecimalType", name: "Age", label: "Age", path: "Age", guid: "8444249301322681"}, {dataType: "EnumerationType", name: "Gender", label: "Gender", path: "Gender", guid: "8444249301322682"}], outputs: [{dataType: "BooleanType", code: "undefined", name: "Eligible", path: "Eligible", conditions: [], label: "false", guid: "7318349394480257"}], version: "0.2.0.draft", ruleContext: {name: "noun_Coffee_472911.png", enumerations: [{name: "DrinkType", values: [{value: "Mocha"}, {value: "Flatwhite"}, {value: "Americano"}, {value: "Cappuccino"}]}, {name: "Products", values: [{label: "Mocha", value: "Mocha"}, {label: "Flatwhite", value: "Flatwhite"}, {label: "Americano", value: "Americano"}]}, {name: "Sizes", values: [{value: "Picollo"}, {value: "Mezo"}, {value: "Grande"}]}, {name: "Gender", values: [{value: "Male"}, {value: "Female"}]}]}, name: "OfAge", decisionObjectType: "DecisionTable", cells: [{columnNumber: 1, rowNumber: 1, guid: "1407374883557482", outputs: []}, {columnNumber: 1, rowNumber: 2, guid: "1407374883557481", outputs: []}, {columnNumber: 2, rowNumber: 1, guid: "1407374883557484", outputs: [{dataType: "BooleanType", name: "Eligible", code: "true", guid: "12384898975271873", active: true}]}, {columnNumber: 2, rowNumber: 2, guid: "1407374883557483", outputs: [{dataType: "BooleanType", name: "Eligible", code: "false", guid: "12384898975271872", active: true}]}, {columnNumber: 3, rowNumber: 1, guid: "1407374883557882", outputs: []}, {columnNumber: 3, rowNumber: 2, guid: "1407374883557881", outputs: []}], columns: [{guid: "6755399441059845", outputs: [{dataType: "BooleanType", name: "Eligible", code: "false", guid: "12384898975271865", active: true}], conditions: [{expression: "Age < 19", conditionType: "Boolean_Expression", label: "Age < 19", guid: "17169973579351717", index: 1}], name: "Younger than 19", index: 1}, {guid: "6755399441059846", outputs: [], conditions: [{expression: "(18 < Age) && (Age < 21)", conditionType: "Boolean_Expression", label: "18 < Age < 21", guid: "17169973579351817", index: 1}], name: "19-20", index: 2}, {guid: "6755399441060245", outputs: [{dataType: "BooleanType", name: "Eligible", code: "true", guid: "12384898975271867", active: true}], conditions: [{expression: "Age > 20", conditionType: "Boolean_Expression", label: "Age > 20", guid: "17169973579351818", index: 1}], name: "Older than 20", index: 3}], rows: [{guid: "14073748835536702", outputs: [{dataType: "BooleanType", name: "Eligible", code: "true", guid: "12384898975271869", active: true}], conditions: [{expression: "Gender === 'Female'", conditionType: "Boolean_Expression", label: "Gender === 'Female'", guid: "17169973579351819", index: 1}], name: "Women", index: 1}, {guid: "14073748835536701", outputs: [], conditions: [{expression: "Gender === 'Male'", conditionType: "Boolean_Expression", label: "Gender === 'Male'", guid: "17169973579351820", index: 1}], name: "Men", index: 2}]});
 //
 // const start = (new Date()).getTime();
 //

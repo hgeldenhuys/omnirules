@@ -7,8 +7,7 @@
 * Helper Functions
 * */
 
-import { assert } from "./author";
-const cq = require("concurrent-queue");
+import { assert, DecisionObject } from "./author";
 
 export function getPath(path: string) {
     const paths = path.split(".").reverse();
@@ -62,20 +61,60 @@ export function assertValueForPath(root: {}, paths: string[], testValue) {
 }
 
 
-const engines = {};
+const registry = {};
 
-export function getRulesEngine(id, version, rules, schemaVersion): Rulesengine {
-    assert(id !== void 0, "Missing rules engine name", "RE-001");
-    assert(version !== void 0, "Missing rules engine version", "RE-002");
-    if (engines[id] === void 0) {
-        engines[id] = {};
+export function load(name: string, version: string, rules: Rule[], schemaVersion: string): Rulesengine {
+    assert(
+        name !== void 0,
+        `Missing rules engine name`,
+        "RE-001");
+    assert(
+        version !== void 0,
+        `Missing rules engine version`,
+        "RE-002");
+    if ((registry[name] !== void 0) && (registry[name][version])) {
+        return registry[name][version];
     }
-    if (engines[id][version] === void 0) {
-        assert(rules !== void 0, `Missing rules for engine ${id}`, "RE-003");
-        engines[id][version] = new Rulesengine(rules, {}, id, version, schemaVersion);
+    if (registry[name] === void 0) {
+        registry[name] = {};
     }
-    return engines[id][version];
+    if (registry[name][version] === void 0) {
+        assert(
+            rules !== void 0,
+            `Missing rules for engine ${name}`,
+            "RE-003");
+        registry[name][version] = new Rulesengine(rules, {}, name, version, schemaVersion);
+    }
+    return registry[name][version];
 }
+
+export function getEngine(name: string, version: string): Rulesengine {
+    assert(
+        name !== void 0,
+        `Missing rules engine name`,
+        "RE-001");
+    assert(
+        version !== void 0,
+        `Missing rules engine version`,
+        "RE-002");
+    assert(
+        registry[name] !== void 0,
+        `No engine loaded with name ${name}`,
+        "RE-004");
+    assert(
+        registry[name][version] !== void 0,
+        `Version ${version} not loaded for ${name}`,
+        "RE-005");
+    return registry[name][version];
+}
+
+export const engines = {
+    load,
+    loadDecisionObject(ds: DecisionObject) {
+        load(ds.name, ds.version, ds.getRules().rules as Rule[], ds.schemaVersion());
+    },
+    getEngine
+};
 
 function censor(censor) {
     let i = 0;
@@ -218,6 +257,7 @@ export class Rulesengine {
     public maxIterations = 100;
     public rules: Rule[] = [];
     public placeBackInQueue = false;
+    public getEngine = getEngine;
     constructor(
         public inputRules: IRuleStructure[],
         public bomRoot: any,
@@ -240,7 +280,7 @@ export class Rulesengine {
             }
         });
     }
-    public reset(bom: any) {
+    public withBom(bom: any) {
         this.bomRoot = bom;
         this.usedRules = [];
         this.usedRuleNames = [];
@@ -338,7 +378,7 @@ export class Rulesengine {
         const result = [];
         const paths = (path && getPath(path));
         bomArray.forEach((bom) => {
-            const newBom = this.reset(bom).run(configuration);
+            const newBom = this.withBom(bom).run(configuration);
             if (!paths) {
                 result.push(newBom);
             } else {
@@ -356,7 +396,7 @@ export class Rulesengine {
             eval(expression);
         }
         bomArray.forEach((bomInput) => {
-            const bom = this.reset(bomInput).run(configuration);
+            const bom = this.withBom(bomInput).run(configuration);
             if (eval(expression)) {
                 if (!paths) {
                     result.push(bom);

@@ -1,16 +1,15 @@
-import {expect} from 'chai';
-import 'mocha';
-import {DataTypeEnum, DecisionObject, RuleSet} from "../src/author";
-import {jlog, Rulesengine} from "../src/rulesengine";
+import { expect } from "chai";
+import "mocha";
+import { DataTypeEnum, DecisionObject, RuleSet } from "../src/author";
 
 describe(`Exceptions`, () => {
 
     it(`Check Circular Reference`, () => {
         const decisionObjectStructure = {
             name: `Basic`,
-            version: '1',
+            version: "1",
             inputs: [],
-            outputs: [{token: "Calculation1", calculation: "Calculation2", dataType: DataTypeEnum.String}, {token: "Calculation2", calculation: "Calculation1", dataType: DataTypeEnum.String}]
+            outputs: [{name: "Calculation1", code: "Calculation2", dataType: DataTypeEnum.String}, {name: "Calculation2", code: "Calculation1", dataType: DataTypeEnum.String}]
         };
         const decisionObject = new DecisionObject(null, decisionObjectStructure);
         try {

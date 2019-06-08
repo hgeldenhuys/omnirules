@@ -1,5 +1,5 @@
 import { MultiAxisTable, RuleSet, SingleAxisTable } from "./author";
-import { getRulesEngine, jlog } from "./rulesengine";
+import { getEngine, jlog } from "./rulesengine";
 import { processText, drawCloud, d3 } from "./d3cloud";
 import { generateRulesEngine, generateRulesEngineRunner } from "./generate-java";
 
@@ -49,7 +49,7 @@ app.post("/api/generate/ruleset", (request, response) => {
 * */
 app.post("/api/load/engine", (request, response) => {
     try {
-        getRulesEngine(request.body.name, request.body.version, request.body.rules, request.body.SchemaVersion);
+        getEngine(request.body.name, request.body.version, request.body.rules, request.body.SchemaVersion);
         response.json({loaded: true});
     } catch (e) {
         response.json({
@@ -64,7 +64,7 @@ app.post("/api/load/engine", (request, response) => {
 app.post("/api/run/engine", (request, response) => {
     try {
         const bom = request.body.bom;
-        const engine = getRulesEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
+        const engine = getEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
         engine.reset(bom).run(request.body.configuration);
         response.json(bom);
     } catch (e) {
@@ -81,7 +81,7 @@ app.post("/api/run/engine", (request, response) => {
 app.post("/api/run/engines", (request, response) => {
     try {
         const boms = request.body.boms;
-        const engine = getRulesEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
+        const engine = getEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
         boms.forEach((bom) => {
             engine.reset(bom).run(request.body.configuration);
         });

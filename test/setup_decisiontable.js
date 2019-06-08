@@ -4,13 +4,12 @@ var author_1 = require("../src/author");
 var rulesengine_1 = require("../src/rulesengine");
 exports.eligibleOutput = {
     name: "Eligible",
-    token: "Eligible",
     dataType: author_1.DataTypeEnum.Boolean,
-    relativePath: "Eligible",
+    path: "Eligible",
     definition: undefined,
     mockValue: "false",
     ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,
-    calculation: "Age > 18",
+    code: "Age > 18",
     conditions: [],
     inputMappings: [],
     rawValue: true,
@@ -21,10 +20,10 @@ exports.ageGenderEligibilityParams = {
     version: "1",
     purpose: "CHeck Age Gender Eligibility",
     inputs: [{
-            token: "Age",
+            name: "Age",
             dataType: author_1.DataTypeEnum.Integer,
         }, {
-            token: "Gender",
+            name: "Gender",
             dataType: author_1.DataTypeEnum.Integer
         }],
     outputs: [exports.eligibleOutput],
@@ -38,7 +37,7 @@ exports.ageGenderEligibilityParams = {
                     number: undefined,
                     includeFrom: false,
                     includeTo: false,
-                    token: "Female"
+                    name: "Female"
                 }],
             outputs: []
         }, {
@@ -51,7 +50,7 @@ exports.ageGenderEligibilityParams = {
                     number: undefined,
                     includeFrom: false,
                     includeTo: false,
-                    token: "Male"
+                    name: "Male"
                 }],
             outputs: []
         }, {
@@ -64,7 +63,7 @@ exports.ageGenderEligibilityParams = {
                     number: undefined,
                     includeFrom: false,
                     includeTo: false,
-                    token: "Default"
+                    name: "Default"
                 }],
             outputs: []
         }],
@@ -78,13 +77,12 @@ exports.ageGenderEligibilityParams = {
             rowNumber: 1,
             outputs: [{
                     name: "Eligible",
-                    token: "Eligible",
                     dataType: author_1.DataTypeEnum.Boolean,
-                    relativePath: "Eligible",
+                    path: "Eligible",
                     definition: undefined,
                     mockValue: "false",
                     ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,
-                    calculation: "Age >= 18",
+                    code: "Age >= 18",
                     conditions: [],
                     inputMappings: [],
                     rawValue: true,
@@ -95,13 +93,12 @@ exports.ageGenderEligibilityParams = {
             rowNumber: 1,
             outputs: [{
                     name: "Eligible",
-                    token: "Eligible",
                     dataType: author_1.DataTypeEnum.Boolean,
-                    relativePath: "Eligible",
+                    path: "Eligible",
                     definition: undefined,
                     mockValue: "false",
                     ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,
-                    calculation: "Age >= 21",
+                    code: "Age >= 21",
                     conditions: [],
                     inputMappings: [],
                     rawValue: true,
@@ -117,41 +114,37 @@ exports.russianNestingDoll = {
     purpose: "Please define",
     inputs: [{
             name: "StartWith",
-            token: "StartWith",
             dataType: author_1.DataTypeEnum.Integer,
-            relativePath: "StartWith",
+            path: "StartWith",
             definition: undefined,
             mockValue: "1"
         }, {
             name: "Size",
-            token: "Size",
             dataType: author_1.DataTypeEnum.Enum,
-            relativePath: "Size",
+            path: "Size",
             definition: undefined,
             mockValue: '"Small"'
         }],
     outputs: [{
             name: "DollsInsideAndIncludingMe",
-            token: "DollsInsideAndIncludingMe",
             dataType: author_1.DataTypeEnum.Integer,
-            relativePath: "DollsInsideAndIncludingMe",
+            path: "DollsInsideAndIncludingMe",
             definition: undefined,
             mockValue: "1",
             ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,
-            calculation: "StartWith + 1",
+            code: "StartWith + 1",
             conditions: [],
             inputMappings: [],
             rawValue: true,
             decisionObject: undefined
         }, {
             name: "Inside",
-            token: "Inside",
             dataType: author_1.DataTypeEnum.Integer,
-            relativePath: "Inside",
+            path: "Inside",
             definition: undefined,
             mockValue: "\"Nothing. I'm on the outside!\"",
             ruleBehaviour: rulesengine_1.RuleBehaviour.Normal,
-            calculation: "\"Nothing. I'm on the outside!\"",
+            code: "\"Nothing. I'm on the outside!\"",
             conditions: [],
             inputMappings: [],
             rawValue: true,

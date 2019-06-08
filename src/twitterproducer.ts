@@ -30,12 +30,12 @@ const rules = {
         user: {
             followers_count: {
                 sampleData: 7,
-                documentation: "This is a FollowersCount of type undefined with default value of undefined",
+                documentation: "This is a FollowersCount of type undefined withBom default value of undefined",
                 dataType: "Integer"
             }
         },
         Segment: {
-            documentation: "This is a Segment of type undefined with default value of undefined"
+            documentation: "This is a Segment of type undefined withBom default value of undefined"
         }
     },
     sampleSchema: {

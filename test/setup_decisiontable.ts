@@ -10,13 +10,12 @@ import { RuleBehaviour } from "../src/rulesengine";
 
 export const eligibleOutput = {
     name: `Eligible`,
-    token: `Eligible`,
     dataType: DataTypeEnum.Boolean,
-    relativePath: `Eligible`,
+    path: `Eligible`,
     definition: undefined,
     mockValue: `false`,
     ruleBehaviour: RuleBehaviour.Normal,
-    calculation: `Age > 18`,
+    code: `Age > 18`,
     conditions: [],
     inputMappings: [],
     rawValue: true,
@@ -28,10 +27,10 @@ export const ageGenderEligibilityParams = {
     version: "1",
     purpose: "CHeck Age Gender Eligibility",
     inputs: [{
-        token: `Age`,
+        name: `Age`,
         dataType: DataTypeEnum.Integer,
     }, {
-        token: `Gender`,
+        name: `Gender`,
         dataType: DataTypeEnum.Integer
     }],
     outputs: [eligibleOutput],
@@ -45,7 +44,7 @@ export const ageGenderEligibilityParams = {
             number: undefined,
             includeFrom: false,
             includeTo: false,
-            token: "Female"
+            name: "Female"
         }],
         outputs: []
     }, {
@@ -58,7 +57,7 @@ export const ageGenderEligibilityParams = {
             number: undefined,
             includeFrom: false,
             includeTo: false,
-            token: "Male"
+            name: "Male"
         }],
         outputs: []
     }, {
@@ -71,7 +70,7 @@ export const ageGenderEligibilityParams = {
             number: undefined,
             includeFrom: false,
             includeTo: false,
-            token: "Default"
+            name: "Default"
         }],
         outputs: []
     }],
@@ -85,13 +84,12 @@ export const ageGenderEligibilityParams = {
         rowNumber: 1,
         outputs: [{
             name: `Eligible`,
-            token: `Eligible`,
             dataType: DataTypeEnum.Boolean,
-            relativePath: `Eligible`,
+            path: `Eligible`,
             definition: undefined,
             mockValue: `false`,
             ruleBehaviour: RuleBehaviour.Normal,
-            calculation: `Age >= 18`,
+            code: `Age >= 18`,
             conditions: [],
             inputMappings: [],
             rawValue: true,
@@ -102,13 +100,12 @@ export const ageGenderEligibilityParams = {
         rowNumber: 1,
         outputs: [{
             name: `Eligible`,
-            token: `Eligible`,
             dataType: DataTypeEnum.Boolean,
-            relativePath: `Eligible`,
+            path: `Eligible`,
             definition: undefined,
             mockValue: `false`,
             ruleBehaviour: RuleBehaviour.Normal,
-            calculation: `Age >= 21`,
+            code: `Age >= 21`,
             conditions: [],
             inputMappings: [],
             rawValue: true,
@@ -126,41 +123,37 @@ export const russianNestingDoll = {
     purpose: "Please define",
     inputs: [{
         name: `StartWith`,
-        token: `StartWith`,
         dataType: DataTypeEnum.Integer,
-        relativePath: `StartWith`,
+        path: `StartWith`,
         definition: undefined,
         mockValue: "1"
     }, {
         name: `Size`,
-        token: `Size`,
         dataType: DataTypeEnum.Enum,
-        relativePath: `Size`,
+        path: `Size`,
         definition: undefined,
         mockValue: '"Small"'
     }],
     outputs: [{
         name: `DollsInsideAndIncludingMe`,
-        token: `DollsInsideAndIncludingMe`,
         dataType: DataTypeEnum.Integer,
-        relativePath: `DollsInsideAndIncludingMe`,
+        path: `DollsInsideAndIncludingMe`,
         definition: undefined,
         mockValue: `1`,
         ruleBehaviour: RuleBehaviour.Normal,
-        calculation: `StartWith + 1`,
+        code: `StartWith + 1`,
         conditions: [],
         inputMappings: [],
         rawValue: true,
         decisionObject: undefined
     }, {
         name: `Inside`,
-        token: `Inside`,
         dataType: DataTypeEnum.Integer,
-        relativePath: `Inside`,
+        path: `Inside`,
         definition: undefined,
         mockValue: `"Nothing. I'm on the outside!"`,
         ruleBehaviour: RuleBehaviour.Normal,
-        calculation: `"Nothing. I'm on the outside!"`,
+        code: `"Nothing. I'm on the outside!"`,
         conditions: [],
         inputMappings: [],
         rawValue: true,

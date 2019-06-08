@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Twitter = require("twitter");
-const rulesengine_1 = require("./rulesengine");
-const client = new Twitter({
+var Twitter = require("twitter");
+var rulesengine_1 = require("./rulesengine");
+var client = new Twitter({
     consumer_key: "57L0tQn7P8gWhmEIYLWAgnODF",
     consumer_secret: "Chs7H82z26ImHD0IfQFDZHci4M5zMeH9sU9JeHWAxKb0q0xftH",
     access_token_key: "3305111-BQbTpQre9PrOQrzhcd4KAS1HYwZVoI1LZoVtjRxBUu",
     access_token_secret: "0CgysbqO8awrliT1W5QL6WfHMbu0aYkJj0Q3bUu7aYhMD"
 });
-const rules = {
+var rules = {
     rules: [
         {
             name: "Segment",
@@ -25,12 +25,12 @@ const rules = {
         user: {
             followers_count: {
                 sampleData: 7,
-                documentation: "This is a FollowersCount of type undefined with default value of undefined",
+                documentation: "This is a FollowersCount of type undefined withBom default value of undefined",
                 dataType: "Integer"
             }
         },
         Segment: {
-            documentation: "This is a Segment of type undefined with default value of undefined"
+            documentation: "This is a Segment of type undefined withBom default value of undefined"
         }
     },
     sampleSchema: {
@@ -40,12 +40,12 @@ const rules = {
         }
     }
 };
-const engine = new rulesengine_1.Rulesengine(rules.rules, {}, rules.Id, rules.Version);
-client.stream("statuses/filter", { track: "twitter" }, (stream) => {
-    stream.on("data", (tweet) => {
+var engine = new rulesengine_1.Rulesengine(rules.rules, {}, rules.Id, rules.Version);
+client.stream("statuses/filter", { track: "twitter" }, function (stream) {
+    stream.on("data", function (tweet) {
         console.log(JSON.stringify(engine.reset(tweet).run(), null, 2).Segment);
     });
-    stream.on("error", (error) => {
+    stream.on("error", function (error) {
         console.log(error);
     });
 });

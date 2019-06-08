@@ -3,22 +3,22 @@ import {
     DataTypeEnum,
     IDecisionObject,
     DecisionObjectType,
-    IOutput,
+    IFact,
     IMultiAxisTable
 } from "../src/author";
 import { RuleBehaviour } from "../src/rulesengine";
 
 // === Eligibility
 
-export const eligibleOutput: IOutput = {
+export const eligibleOutput: IFact = {
     label: `Eligible`,
-    token: `Eligible`,
+    name: `Eligible`,
     dataType: DataTypeEnum.Boolean,
-    relativePath: `Eligible`,
-    definition: undefined,
+    path: `Eligible`,
+    doc: undefined,
     mockValue: `false`,
     ruleBehaviour: RuleBehaviour.Normal,
-    calculation: `Age > 18`,
+    code: `Age > 18`,
     conditions: [],
     inputMappings: [],
     rawValue: true,
@@ -30,16 +30,16 @@ export const dtAgeGenderEligibility: IMultiAxisTable = {
     version: "1",
     purpose: "AgeGenderEligibility",
     inputs: [{
-        token: `Age`,
+        name: `Age`,
         dataType: DataTypeEnum.Integer,
-        relativePath: `Age`,
-        definition: undefined,
+        path: `Age`,
+        doc: undefined,
         mockValue: undefined
     }, {
-        token: `Gender`,
+        name: `Gender`,
         dataType: DataTypeEnum.Integer,
-        relativePath: `Gender`,
-        definition: undefined,
+        path: `Gender`,
+        doc: undefined,
         mockValue: undefined
     }],
     outputs: [eligibleOutput],
@@ -53,7 +53,7 @@ export const dtAgeGenderEligibility: IMultiAxisTable = {
             number: undefined,
             includeFrom: false,
             includeTo: false,
-            token: "Female"
+            name: "Female"
         }],
         outputs: []
     }, {
@@ -66,7 +66,7 @@ export const dtAgeGenderEligibility: IMultiAxisTable = {
             number: undefined,
             includeFrom: false,
             includeTo: false,
-            token: "Male"
+            name: "Male"
         }],
         outputs: []
     }, {
@@ -79,7 +79,7 @@ export const dtAgeGenderEligibility: IMultiAxisTable = {
             number: undefined,
             includeFrom: false,
             includeTo: false,
-            token: "Default"
+            name: "Default"
         }],
         outputs: []
     }],
@@ -93,13 +93,13 @@ export const dtAgeGenderEligibility: IMultiAxisTable = {
             columnNumber: 1,
             rowNumber: 1,
             outputs: [{
-                token: `Eligible`,
+                name: `Eligible`,
                 dataType: DataTypeEnum.Boolean,
-                relativePath: `Eligible`,
-                definition: undefined,
+                path: `Eligible`,
+                doc: undefined,
                 mockValue: `false`,
                 ruleBehaviour: RuleBehaviour.Normal,
-                calculation: `Age >= 18`,
+                code: `Age >= 18`,
                 conditions: [],
                 inputMappings: [],
                 rawValue: true,
@@ -110,13 +110,13 @@ export const dtAgeGenderEligibility: IMultiAxisTable = {
         columnNumber: 2,
         rowNumber: 1,
         outputs: [{
-            token: `Eligible`,
+            name: `Eligible`,
             dataType: DataTypeEnum.Boolean,
-            relativePath: `Eligible`,
-            definition: undefined,
+            path: `Eligible`,
+            doc: undefined,
             mockValue: `false`,
             ruleBehaviour: RuleBehaviour.Normal,
-            calculation: `Age >= 21`,
+            code: `Age >= 21`,
             conditions: [],
             inputMappings: [],
             rawValue: true,
@@ -129,16 +129,18 @@ export const dtAgeGenderEligibility: IMultiAxisTable = {
 
 // === Retirement
 
+// ToDo: Remove RawValues, they don't make sense
+// ToDo: Remove decisionObject, try picking them up from the code. Make it implicit instead of explicit
 
-export const yearsToGo: IOutput = {
+export const yearsToGo: IFact = {
     label: `YearsToGo`,
-    token: `YearsToGo`,
+    name: `YearsToGo`,
     dataType: DataTypeEnum.Integer,
-    relativePath: `YearsToGo`,
-    definition: undefined,
+    path: `YearsToGo`,
+    doc: undefined,
     mockValue: `false`,
     ruleBehaviour: RuleBehaviour.Normal,
-    calculation: `result = AgeToRetirement - Age; result = result < 0 ? 0 : result;`,
+    code: `result = AgeToRetirement - Age; result = result < 0 ? 0 : result;`,
     conditions: [],
     inputMappings: [],
     rawValue: false,
@@ -146,45 +148,45 @@ export const yearsToGo: IOutput = {
 };
 
 
-export const canRetire: IOutput = {
+export const canRetire: IFact = {
     label: `CanRetire`,
-    token: `CanRetire`,
+    name: `CanRetire`,
     dataType: DataTypeEnum.Integer,
-    relativePath: `CanRetire`,
-    definition: undefined,
+    path: `CanRetire`,
+    doc: undefined,
     mockValue: `false`,
     ruleBehaviour: RuleBehaviour.Normal,
-    calculation: `YearsToGo <= 0`,
+    code: `YearsToGo <= 0`,
     conditions: [],
     inputMappings: [],
     rawValue: true,
     decisionObject: undefined
 };
 
-export const insuranceEligibility: IOutput = {
+export const insuranceEligibility: IFact = {
     label: `InsuranceEligibility`,
-    token: `InsuranceEligibility`,
+    name: `InsuranceEligibility`,
     dataType: DataTypeEnum.Integer,
-    relativePath: `InsuranceEligibility`,
-    definition: undefined,
+    path: `InsuranceEligibility`,
+    doc: undefined,
     mockValue: `false`,
     ruleBehaviour: RuleBehaviour.Normal,
-    calculation: ``,
+    code: ``,
     conditions: [],
-    inputMappings: [{To: "Age", From: "YearsToGo"}, {To: "Gender", From: "'Unknown'"}],
+    inputMappings: [{To: "Age", From: "YearsToGo"}, {To: "Gender", From: "'Any'"}],
     rawValue: true,
     decisionObject: dtAgeGenderEligibility
 };
 
-export const offerInsurance: IOutput = {
+export const offerInsurance: IFact = {
     label: `OfferInsurance`,
-    token: `OfferInsurance`,
+    name: `OfferInsurance`,
     dataType: DataTypeEnum.Boolean,
-    relativePath: `Offer.Insurance`,
-    definition: undefined,
+    path: `Offer.Insurance`,
+    doc: undefined,
     mockValue: `false`,
     ruleBehaviour: RuleBehaviour.Normal,
-    calculation: `true`,
+    code: `true`,
     conditions: [{
         conditionType: ConditionTypeEnum.Boolean,
         expression: "CanRetire === true",
@@ -193,7 +195,7 @@ export const offerInsurance: IOutput = {
         from: undefined,
         to: undefined,
         number: undefined,
-        token: "CannotRetire"
+        name: "CannotRetire"
     }],
     inputMappings: [],
     rawValue: true,
@@ -201,15 +203,15 @@ export const offerInsurance: IOutput = {
 };
 
 
-export const offers: IOutput = {
+export const offers: IFact = {
     label: `Offers`,
-    token: `Offers`,
+    name: `Offers`,
     dataType: DataTypeEnum.List,
-    relativePath: `Offers`,
-    definition: undefined,
+    path: `Offers`,
+    doc: undefined,
     mockValue: `false`,
     ruleBehaviour: RuleBehaviour.Always,
-    calculation: `result = []; if (getBOMValue(bom, "OfferInsurance")) result.push("You are eligible for insurance");`,
+    code: `result = []; if (getBOMValue(bom, "OfferInsurance")) result.push("You are eligible for insurance");`,
     conditions: [],
     inputMappings: [],
     rawValue: true,
@@ -221,17 +223,17 @@ export const dtYearsToRetirement: IDecisionObject = {
     version: "1",
     inputs: [{
         label: `Age`,
-        token: `Age`,
+        name: `Age`,
         dataType: DataTypeEnum.Integer,
-        relativePath: `Age`,
-        definition: undefined,
+        path: `Age`,
+        doc: undefined,
         mockValue: undefined
     }, {
         label: `AgeToRetirement`,
-        token: `AgeToRetirement`,
+        name: `AgeToRetirement`,
         dataType: DataTypeEnum.Integer,
-        relativePath: `AgeToRetirement`,
-        definition: undefined,
+        path: `AgeToRetirement`,
+        doc: undefined,
         mockValue: undefined
     }],
     outputs: [yearsToGo, canRetire, insuranceEligibility, offerInsurance, offers],

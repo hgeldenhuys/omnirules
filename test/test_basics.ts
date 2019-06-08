@@ -1,9 +1,69 @@
 import { expect } from "chai";
 import "mocha";
 import { DataTypeEnum, DecisionObject, RuleSet } from "../src/author";
-import { addToBom, assertValueForPath, getPath, getValueForPath, Rulesengine } from "../src/rulesengine";
+import { engines, jlog, Rulesengine } from "../src/rulesengine";
 
 describe(`Basics: Inputs`, () => {
+    const tbuilder = new DecisionObject(undefined, {
+        version: "1.0",
+        name: "Type Inference",
+        inputs: [{
+            name: "rawInput"
+        }],
+        outputs: [
+            {
+                name: "possibleNumber",
+                dataType: DataTypeEnum.Boolean,
+                code: "!isNaN(eval(rawInput))",
+                path: "possible.Number"
+            },
+            {
+                name: "possibleString",
+                dataType: DataTypeEnum.Boolean,
+                code: "!!eval(rawInput) && !!eval(rawInput).length",
+                path: "possible.String"
+            },
+            {
+                name: "possibleId",
+                dataType: DataTypeEnum.Boolean,
+                code: "possibleNumber && possibleString",
+                path: "possible.Id"
+            },
+            {
+                name: "Length",
+                dataType: DataTypeEnum.Integer,
+                code: `possibleString && rawInput.length`
+            },
+            {
+                name: "Is13Long",
+                dataType: DataTypeEnum.Boolean,
+                code: `possibleId && Length === 15`
+            }
+        ]
+    });
+    // jlog(tbuilder.getRules());
+    // jlog(tbuilder.generateSampleBOM());
+    engines.loadDecisionObject(tbuilder);
+    const builder2 = new DecisionObject(undefined, {
+        name: "Check ID",
+        version: "1.0",
+        inputs: [
+            {
+                name: "IDNumber",
+                dataType: DataTypeEnum.Any
+            }
+        ],
+        outputs: [
+            {
+                name: "IsValid",
+                dataType: DataTypeEnum.Object,
+                code: `
+                const ti = engine.getEngine("${tbuilder.name}", "${tbuilder.version}").withBom({rawInput: "'" + IDNumber + "'"}).run();
+                result = ti.Length === 15;`
+            }
+        ]
+    });
+    jlog(new Rulesengine(builder2.getRules().rules, {IDNumber: 8003075050084}).run({withStats: true}));
 
     const start = Date.now();
     const rules = {rules: [{name: "ToDoAskForTray", code: "result = bom.Drink.length > 2;", behaviour: 1}, {name: "Pay", code: "result = ((bom.ToDoAskForTray == false) || (bom.AskedForTray && bom.ToDoAskForTray)) && (bom.Drink.length > 0);", behaviour: 1}], Version: "3.2.0"};
@@ -13,7 +73,7 @@ describe(`Basics: Inputs`, () => {
         const BOM = {Drink:
                 [{Type: "Americano", Size: "Mezo"}, {Type: "Americano", Size: "Mezo"}, {Type: "Americano", Size: "Mezo"}],
             AskedForTray: false, ToDoAskForTray: false};
-        engine.reset(BOM);
+        engine.withBom(BOM);
         engine.run({withStats: true});
     }
     console.log(`Took: ${Date.now() - start}`);
@@ -22,8 +82,8 @@ describe(`Basics: Inputs`, () => {
         const decisionObjectStructure = {
             name: `Basic`,
             version: "1",
-            inputs: [{token: "Name", dataType: DataTypeEnum.String}],
-            outputs: [{token: "FullName", calculation: "Name + ' ' + LastName"}]
+            inputs: [{name: "Name", dataType: DataTypeEnum.String}],
+            outputs: [{name: "FullName", code: "Name + ' ' + LastName"}]
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
         const BOM = decisionObject.generateSampleBOM();
@@ -34,8 +94,8 @@ describe(`Basics: Inputs`, () => {
         const decisionObjectStructure = {
             name: `Basic`,
             version: "1",
-            inputs: [{token: "Name", dataType: DataTypeEnum.String}],
-            outputs: [{token: "FullName", calculation: "Name + ' ' + LastName"}]
+            inputs: [{name: "Name", dataType: DataTypeEnum.String}],
+            outputs: [{name: "FullName", code: "Name + ' ' + LastName"}]
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
         decisionObject.builder.withInput("LastName").asString("Geldenhuys");
@@ -49,8 +109,8 @@ describe(`Basics: Inputs`, () => {
         const decisionObjectStructure = {
             name: `Basic`,
             version: "1",
-            inputs: [{token: "Name", dataType: DataTypeEnum.String, mockValue: "'Herman'"}, {token: "LastName", dataType: DataTypeEnum.String, mockValue: "'Geldenhuys'"}],
-            outputs: [{token: "FullName", calculation: "Name + ' ' + LastName", dataType: DataTypeEnum.String}]
+            inputs: [{name: "Name", dataType: DataTypeEnum.String, mockValue: "'Herman'"}, {name: "LastName", dataType: DataTypeEnum.String, mockValue: "'Geldenhuys'"}],
+            outputs: [{name: "FullName", code: "Name + ' ' + LastName", dataType: DataTypeEnum.String}]
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
         const BOM = decisionObject.generateSampleBOM();
@@ -63,11 +123,11 @@ describe(`Basics: Inputs`, () => {
         const decisionObjectStructure = {
             name: `Basic`,
             version: "1",
-            inputs: [{token: "Name", dataType: DataTypeEnum.String, mockValue: "'Hendrik'"}, {token: "LastName", dataType: DataTypeEnum.String, mockValue: "'Geldenhuys'"}],
+            inputs: [{name: "Name", dataType: DataTypeEnum.String, mockValue: "'Hendrik'"}, {name: "LastName", dataType: DataTypeEnum.String, mockValue: "'Geldenhuys'"}],
             outputs: []
         };
         const decisionObject = new DecisionObject(undefined, decisionObjectStructure);
-        decisionObject.builder.withOutput("FullName").asString().usingCalculation("Name + ' ' + LastName");
+        decisionObject.builder.withOutput("FullName").asString().usingCode("Name + ' ' + LastName");
         const BOM = decisionObject.generateSampleBOM();
         const engine = new Rulesengine(decisionObject.getRules().rules, BOM, decisionObject.name, decisionObject.version, decisionObject.schemaVersion(), decisionObject.getInputNames());
         engine.run({withStats: false});
@@ -128,7 +188,7 @@ describe(`Basics: Inputs`, () => {
         ruleSet.builder
             .withInput("PeekA").asString("BOO").comma()
             .withInput("options.ABoolean").asBoolean(true).comma()
-            .withOutput("I").usingCalculation("'See You!'");
+            .withOutput("I").usingCode("'See You!'");
 
         const decisionObject = new DecisionObject(undefined, ruleSet);
         const bom = ruleSet.generateSampleBOM();
@@ -145,7 +205,7 @@ describe(`Basics: Inputs`, () => {
         ruleSet.builder
             .withInput("PeekA").asString("BOO").comma()
             .withInput("options.ABoolean").asBoolean(true).comma()
-            .withOutput("I").usingCalculation("'See You!'");
+            .withOutput("I").usingCode("'See You!'");
         let bom = ruleSet.generateSampleBOM();
         let engine = new Rulesengine(ruleSet.getRules().rules, bom, ruleSet.name, ruleSet.version, ruleSet.schemaVersion(), ruleSet.getInputNames());
         engine.run();
@@ -174,7 +234,7 @@ describe(`Basics: Inputs`, () => {
         ruleSet.builder
             .withInput("PeekA").asString("BOO").comma()
             .withInput("options.ABoolean").asBoolean(true).comma()
-            .withOutput("I").usingCalculation("'See You!'")
+            .withOutput("I").usingCode("'See You!'")
                 .ifTrueThat("ABoolean").and()
                 .ifTrueThat("PeekA==='BOO'");
 

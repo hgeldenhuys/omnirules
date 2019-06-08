@@ -13,22 +13,20 @@ describe(`Schema: Input Paths`, () => {
             inputs: [{
                 mockValue: "'Ransom'",
                 definition: "",
-                relativePath: "Name",
+                path: "Name",
                 dataType: DataTypeEnum.String,
-                token: "Name",
-                name: "Name"
+                name: "Name",
             }],
             outputs: [{
                 ruleBehaviour: RuleBehaviour.Normal,
                 mockValue: undefined,
                 definition: "",
-                relativePath: "Echo.Echo",
+                path: "Echo.Echo",
                 dataType: DataTypeEnum.String,
-                token: "Echo",
                 name: "Echo",
                 decisionObject: undefined,
                 rawValue: false,
-                calculation: "Name + Name",
+                code: "Name + Name",
                 inputMappings: [],
                 conditions: []
             }]
@@ -48,22 +46,20 @@ describe(`Schema: Input Paths`, () => {
             inputs: [{
                 mockValue: "'Ransom'",
                 definition: "",
-                relativePath: "Client.Name",
+                path: "Client.Name",
                 dataType: DataTypeEnum.String,
-                token: "Name",
-                name: "Name"
+                name: "Name",
             }],
             outputs: [{
                 ruleBehaviour: RuleBehaviour.Normal,
                 mockValue: undefined,
                 definition: "",
-                relativePath: "Echo.Echo",
+                path: "Echo.Echo",
                 dataType: DataTypeEnum.String,
-                token: "Echo",
                 name: "Echo",
                 decisionObject: undefined,
                 rawValue: false,
-                calculation: "Name + Name",
+                code: "Name + Name",
                 inputMappings: [],
                 conditions: [{
                     to: undefined,
@@ -73,7 +69,7 @@ describe(`Schema: Input Paths`, () => {
                     expression: "Name === 'Ransom'",
                     conditionType: ConditionTypeEnum.Boolean,
                     number: undefined,
-                    token: "Name is Ransom"
+                    name: "Name is Ransom"
                 }]
             }]
         };
@@ -105,22 +101,20 @@ describe(`Conditions: Simple`, () => {
             inputs: [{
                 mockValue: "'Ransom'",
                 definition: "",
-                relativePath: "Client.Name",
+                path: "Client.Name",
                 dataType: DataTypeEnum.String,
-                token: "Name",
-                name: "Name"
+                name: "Name",
             }],
             outputs: [{
                 ruleBehaviour: RuleBehaviour.Normal,
                 mockValue: undefined,
                 definition: "",
-                relativePath: "Echo.Echo",
+                path: "Echo.Echo",
                 dataType: DataTypeEnum.String,
-                token: "Echo",
                 name: "Echo",
                 decisionObject: undefined,
                 rawValue: false,
-                calculation: "Name + Name",
+                code: "Name + Name",
                 inputMappings: [],
                 conditions: [{
                     to: undefined,
@@ -130,7 +124,7 @@ describe(`Conditions: Simple`, () => {
                     expression: "Name === 'Ransom'",
                     conditionType: ConditionTypeEnum.Boolean,
                     number: undefined,
-                    token: "Name is Ransom"
+                    name: "Name is Ransom"
                 }]
             }]
         };
@@ -151,22 +145,20 @@ describe(`Conditions: Simple`, () => {
             inputs: [{
                 mockValue: "'Ransom'",
                 definition: "",
-                relativePath: "Client.Name",
+                path: "Client.Name",
                 dataType: DataTypeEnum.String,
-                token: "Name",
-                name: "Name"
+                name: "Name",
             }],
             outputs: [{
                 ruleBehaviour: RuleBehaviour.Normal,
                 mockValue: undefined,
                 definition: "",
-                relativePath: "Echo.Echo",
+                path: "Echo.Echo",
                 dataType: DataTypeEnum.String,
-                token: "Echo",
                 name: "Echo",
                 decisionObject: undefined,
                 rawValue: false,
-                calculation: "Name + Name",
+                code: "Name + Name",
                 inputMappings: [],
                 conditions: [{
                     to: undefined,
@@ -176,7 +168,7 @@ describe(`Conditions: Simple`, () => {
                     expression: "Name !== 'Ransom'",
                     conditionType: ConditionTypeEnum.Boolean,
                     number: undefined,
-                    token: "Name is Ransom"
+                    name: "Name is Ransom"
                 }]
             }]
         };
@@ -200,29 +192,26 @@ describe(`Conditionals: GreaterThan, LessThan, Between, Outside`, () => {
         inputs: [{
             mockValue: "5",
             definition: "",
-            relativePath: "Number.Bottom",
+            path: "Number.Bottom",
             dataType: DataTypeEnum.Integer,
-            token: "Bottom",
-            name: "The Bottom Number"
+            name: "Bottom",
         }, {
             mockValue: "10",
             definition: "",
-            relativePath: "Number.Top",
+            path: "Number.Top",
             dataType: DataTypeEnum.Integer,
-            token: "Top",
-            name: "The Top Number"
+            name: "Top",
         }],
         outputs: [{
             ruleBehaviour: RuleBehaviour.Normal,
             mockValue: undefined,
             definition: "",
-            relativePath: "Results.GreaterThan",
+            path: "Results.GreaterThan",
             dataType: DataTypeEnum.String,
-            token: "GreaterThan",
             name: "GreaterThan",
             decisionObject: undefined,
             rawValue: false,
-            calculation: "'6 is greater than Bottom'",
+            code: "'6 is greater than Bottom'",
             inputMappings: [],
             conditions: [{
                 to: undefined,
@@ -232,20 +221,19 @@ describe(`Conditionals: GreaterThan, LessThan, Between, Outside`, () => {
                 expression: "6",
                 conditionType: ConditionTypeEnum.GreaterThan,
                 number: "Bottom",
-                token: "6 > Bottom"
+                name: "6 > Bottom"
             }]
         },
             {
             ruleBehaviour: RuleBehaviour.Normal,
             mockValue: undefined,
             definition: "",
-            relativePath: "Results.LessThan",
+            path: "Results.LessThan",
             dataType: DataTypeEnum.String,
-            token: "LessThan",
             name: "LessThan",
             decisionObject: undefined,
             rawValue: false,
-            calculation: "'6 is less than Top'",
+            code: "'6 is less than Top'",
             inputMappings: [],
             conditions: [{
                 to: undefined,
@@ -255,20 +243,19 @@ describe(`Conditionals: GreaterThan, LessThan, Between, Outside`, () => {
                 expression: "6",
                 conditionType: ConditionTypeEnum.LessThan,
                 number: "Top",
-                token: "6 < Top"
+                name: "6 < Top"
             }]
         },
             {
             ruleBehaviour: RuleBehaviour.Normal,
             mockValue: undefined,
             definition: "",
-            relativePath: "Results.GreaterThanOrEqualTo",
+            path: "Results.GreaterThanOrEqualTo",
             dataType: DataTypeEnum.String,
-            token: "GreaterThanOrEqualTo",
             name: "GreaterThanOrEqualTo",
             decisionObject: undefined,
             rawValue: false,
-            calculation: "'6 is greater than or equal to Bottom'",
+            code: "'6 is greater than or equal to Bottom'",
             inputMappings: [],
             conditions: [{
                 to: undefined,
@@ -278,20 +265,19 @@ describe(`Conditionals: GreaterThan, LessThan, Between, Outside`, () => {
                 expression: "6",
                 conditionType: ConditionTypeEnum.GreaterThanOrEqualTo,
                 number: "Bottom",
-                token: "6 >= Bottom"
+                name: "6 >= Bottom"
             }]
         },
             {
             ruleBehaviour: RuleBehaviour.Normal,
             mockValue: undefined,
             definition: "",
-            relativePath: "Results.LessThanOrEqualTo",
+            path: "Results.LessThanOrEqualTo",
             dataType: DataTypeEnum.String,
-            token: "LessThanOrEqualTo",
             name: "LessThanOrEqualTo",
             decisionObject: undefined,
             rawValue: false,
-            calculation: "'6 is less than or equal to Top'",
+            code: "'6 is less than or equal to Top'",
             inputMappings: [],
             conditions: [{
                 to: undefined,
@@ -301,20 +287,19 @@ describe(`Conditionals: GreaterThan, LessThan, Between, Outside`, () => {
                 expression: "6",
                 conditionType: ConditionTypeEnum.LessThanOrEqualTo,
                 number: "Top",
-                token: "6 <= Top"
+                name: "6 <= Top"
             }]
         },
             {
             ruleBehaviour: RuleBehaviour.Normal,
             mockValue: undefined,
             definition: "",
-            relativePath: "Results.Between",
+            path: "Results.Between",
             dataType: DataTypeEnum.String,
-            token: "Between",
             name: "Between",
             decisionObject: undefined,
             rawValue: false,
-            calculation: "'6 is between Bottom and Top'",
+            code: "'6 is between Bottom and Top'",
             inputMappings: [],
             conditions: [{
                 to: "10",
@@ -324,7 +309,7 @@ describe(`Conditionals: GreaterThan, LessThan, Between, Outside`, () => {
                 expression: "6",
                 conditionType: ConditionTypeEnum.Between,
                 number: undefined,
-                token: "Bottom <= 6 <= Top"
+                name: "Bottom <= 6 <= Top"
             }]
         }]
     };

@@ -27,7 +27,7 @@ exports.app.post("/api/generate/ruleset", function (request, response) {
 });
 exports.app.post("/api/load/engine", function (request, response) {
     try {
-        rulesengine_1.getRulesEngine(request.body.name, request.body.version, request.body.rules, request.body.SchemaVersion);
+        rulesengine_1.getEngine(request.body.name, request.body.version, request.body.rules, request.body.SchemaVersion);
         response.json({ loaded: true });
     }
     catch (e) {
@@ -42,7 +42,7 @@ exports.app.post("/api/load/engine", function (request, response) {
 exports.app.post("/api/run/engine", function (request, response) {
     try {
         var bom = request.body.bom;
-        var engine = rulesengine_1.getRulesEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
+        var engine = rulesengine_1.getEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
         engine.reset(bom).run(request.body.configuration);
         response.json(bom);
     }
@@ -59,7 +59,7 @@ exports.app.post("/api/run/engine", function (request, response) {
 exports.app.post("/api/run/engines", function (request, response) {
     try {
         var boms = request.body.boms;
-        var engine_1 = rulesengine_1.getRulesEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
+        var engine_1 = rulesengine_1.getEngine(request.body.name, request.body.version, void 0, request.body.SchemaVersion);
         boms.forEach(function (bom) {
             engine_1.reset(bom).run(request.body.configuration);
         });

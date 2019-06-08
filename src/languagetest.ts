@@ -69,11 +69,11 @@ let tagger = new natural.BrillPOSTagger(lexicon, rules);
 //     const result = [];
 //     if (word.tag === "NN") {
 //         const paths = path2.split(".");
-//         if (paths.pop() !== word.token) {
-//             path2 = `${path2}${path2 !== "" ? "." : ""}${word.token}`;
+//         if (paths.pop() !== word.name) {
+//             path2 = `${path2}${path2 !== "" ? "." : ""}${word.name}`;
 //         }
 //     } else if ((word.tag === "N") || (word.tag === "JJ")) {
-//         result.push(`   ${path2} ${oper} ${word.token}`);
+//         result.push(`   ${path2} ${oper} ${word.name}`);
 //         const paths = path2.split(".");
 //         paths.pop();
 //         path2 = paths.join(".");
@@ -83,8 +83,8 @@ let tagger = new natural.BrillPOSTagger(lexicon, rules);
 //     } else if (word.tag === "RB") {
 //         oper = "!" + oper;
 //     } else if (word.tag === "JJR") {
-//         oper = (word.token === "greater" ? ">" : word.token === "less" ? "<" : "?") + oper;
-//     } else if ((word.tag === "CC") && (word.token === "or")) {
+//         oper = (word.name === "greater" ? ">" : word.name === "less" ? "<" : "?") + oper;
+//     } else if ((word.tag === "CC") && (word.name === "or")) {
 //         console.error("Do not use an OR when defining rules. Instead add another rule and convert to AND logical statements.");
 //     }
 // };
@@ -169,8 +169,8 @@ export function tokenizeRules(data, useTokenizer: UseTokenizer = UseTokenizer.Wo
     ruleTokens.forEach((tokens) => {
         tokens.taggedWords.forEach((word) => {
             word.stem = {
-                porter: porter.stem(word.token),
-                lancaster: lancaster.stem(word.token)
+                porter: porter.stem(word.alias),
+                lancaster: lancaster.stem(word.alias)
             };
         });
     });
@@ -187,20 +187,20 @@ export function createRules(tokens) {
     tokens.taggedWords.forEach((word) => {
         if (word.tag === "NN") {
             const paths = path.split(".");
-            if (paths.pop() !== word.token) {
-                path = `${path}${path !== "" ? "." : ""}${word.token}`;
+            if (paths.pop() !== word.alias) {
+                path = `${path}${path !== "" ? "." : ""}${word.alias}`;
             }
             oper = "";
         } else if ((word.tag === "N") || (word.tag === "JJ") || (word.tag === "NNP")) {
             if (path.indexOf(".result") > -1) {
-                result.result = word.token;
+                result.result = word.alias;
                 const paths = path.split(".");
-                if (paths.pop() !== word.token) {
-                    path = `${path}${path !== "" ? "." : ""}${word.token}`;
+                if (paths.pop() !== word.alias) {
+                    path = `${path}${path !== "" ? "." : ""}${word.alias}`;
                 }
                 oper = "";
             } else {
-                result.conditions.push(`${path} ${oper} ${stringValue(word.token)}`);
+                result.conditions.push(`${path} ${oper} ${stringValue(word.alias)}`);
                 const paths = path.split(".");
                 paths.pop();
                 path = paths.join(".");
@@ -208,14 +208,14 @@ export function createRules(tokens) {
             }
         } else if (word.tag === "VBZ") {
             oper += "==";
-        } else if ((word.tag === "RB") && (word.token.toLowerCase() === "not")) {
+        } else if ((word.tag === "RB") && (word.alias.toLowerCase() === "not")) {
             oper = "!" + oper;
-        // } else if ((word.tag === "RB") && (word.token.toLowerCase() === "then")) {
+        // } else if ((word.tag === "RB") && (word.name.toLowerCase() === "then")) {
         //     oper = "";
         //     path = "";
         } else if (word.tag === "JJR") {
-            oper = (word.token === "greater" ? ">" : word.token === "less" ? "<" : "?") + oper;
-        } else if ((word.tag === "CC") && (word.token === "or")) {
+            oper = (word.alias === "greater" ? ">" : word.alias === "less" ? "<" : "?") + oper;
+        } else if ((word.tag === "CC") && (word.alias === "or")) {
             console.error("Do not use an OR when defining rules. Instead add another rule and convert to AND logical statements.");
         }
     });
@@ -223,14 +223,10 @@ export function createRules(tokens) {
 }
 
 // If the applicant's age is 18 then the applicant is not of age.
-// If the applicant's age is 18 then the applicant is not ofAge. (replace "not ${ruleName}" with "result is false" and "${ruleName}" with "${result} is true")
+// If the applicant's age is 18 then the applicant is not ofAge. (replace "not ${ruleName}" withBom "result is false" and "${ruleName}" withBom "${result} is true")
 const paragraph = `
-If the applicant's age is 18 then the result is false.
-If the applicant's age is greater than 21 years and gender is male then the result is true.
-Whenever the applicant's age is greater than 20 years and gender is female then the result is true.
-When the applicant's age is less than 20 years and the applicant's gender is not female then the result is false.
-If the applicant's name is Vanessa, then the result is false;
 
+If an applicant has a diploma and the applicant has experience greater than 2 years, the result is true.
 `;
 export function generateCode(paragraph) {
     const sentenceTokenizer = new natural.SentenceTokenizer();
@@ -244,7 +240,7 @@ export function generateCode(paragraph) {
     });
     ruleTokens.forEach((tokens) => {
         tokens.taggedWords.forEach((word) => {
-            return word.stem = porter.stem(word.token);
+            return word.stem = porter.stem(word.alias);
         });
     });
     const ruleSet = ruleTokens.map((ruleToken) => {

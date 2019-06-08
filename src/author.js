@@ -18,19 +18,19 @@ var ts_md5_1 = require("ts-md5");
 var bom_1 = require("./bom");
 var terser = require("terser");
 var avro = require("avsc");
-function functionize(calculation, addFunction, rawValue) {
+function functionize(code, addFunction, rawValue) {
     if (addFunction === void 0) { addFunction = false; }
     if (rawValue === void 0) { rawValue = false; }
     if (!rawValue) {
-        calculation = calculation || "";
-        if (calculation.indexOf("result") === -1) {
-            calculation = "var result=undefined; result = " + calculation;
+        code = code || "";
+        if (code.indexOf("result") === -1) {
+            code = "var result=undefined; result = " + code;
         }
         if (addFunction) {
-            calculation = "function() {" + calculation + "; return result}";
+            code = "function() {" + code + "; return result}";
         }
     }
-    return calculation;
+    return code;
 }
 exports.functionize = functionize;
 function assert(expr, message, code) {
@@ -40,18 +40,18 @@ function assert(expr, message, code) {
     return assert;
 }
 exports.assert = assert;
-function replaceTokensWithPath(calculation, token, path) {
-    var previousRegex = new RegExp("\\b\\." + token + "\\b", "g");
-    var tokenRegEx = new RegExp("(?!'|\")\\b" + token + "\\b(?!'|\")", "g");
-    var restorePreviousRegex = new RegExp("\\b\\._" + token + "\\b", "g");
-    var restoreValuesBetweenSingleQuotesRegex = new RegExp("(')\\b([^']*)(bom.)" + token + "([^']*)\\b(')", "g");
-    var restoreValuesBetweenDoubleQuotesRegex = new RegExp("(\")\\b([^\"]*)(bom.)" + token + "([^\"]*)\\b(\")", "g");
-    calculation = calculation.replace(previousRegex, "._" + token);
-    calculation = calculation.replace(tokenRegEx, "" + path);
-    calculation = calculation.replace(restorePreviousRegex, "." + token);
-    calculation = calculation.replace(restoreValuesBetweenSingleQuotesRegex, "'$2" + token + "$4'");
-    calculation = calculation.replace(restoreValuesBetweenDoubleQuotesRegex, "\"$2" + token + "$4\"");
-    return calculation;
+function replaceTokensWithPath(code, name, path) {
+    var previousRegex = new RegExp("\\b\\." + name + "\\b", "g");
+    var nameRegEx = new RegExp("(?!'|\")\\b" + name + "\\b(?!'|\")", "g");
+    var restorePreviousRegex = new RegExp("\\b\\._" + name + "\\b", "g");
+    var restoreValuesBetweenSingleQuotesRegex = new RegExp("(')\\b([^']*)(bom.)" + name + "([^']*)\\b(')", "g");
+    var restoreValuesBetweenDoubleQuotesRegex = new RegExp("(\")\\b([^\"]*)(bom.)" + name + "([^\"]*)\\b(\")", "g");
+    code = code.replace(previousRegex, "._" + name);
+    code = code.replace(nameRegEx, "" + path);
+    code = code.replace(restorePreviousRegex, "." + name);
+    code = code.replace(restoreValuesBetweenSingleQuotesRegex, "'$2" + name + "$4'");
+    code = code.replace(restoreValuesBetweenDoubleQuotesRegex, "\"$2" + name + "$4\"");
+    return code;
 }
 exports.replaceTokensWithPath = replaceTokensWithPath;
 function tokenizeString(input) {
@@ -89,7 +89,7 @@ var DecisionObjectType;
 })(DecisionObjectType = exports.DecisionObjectType || (exports.DecisionObjectType = {}));
 var ConditionTypeEnum;
 (function (ConditionTypeEnum) {
-    ConditionTypeEnum["Boolean"] = "Boolean";
+    ConditionTypeEnum["Boolean"] = "Expression";
     ConditionTypeEnum["LessThan"] = "LessThan";
     ConditionTypeEnum["LessThanOrEqualTo"] = "LessThanOrEqualTo";
     ConditionTypeEnum["GreaterThan"] = "GreaterThan";
@@ -99,7 +99,7 @@ var ConditionTypeEnum;
 })(ConditionTypeEnum = exports.ConditionTypeEnum || (exports.ConditionTypeEnum = {}));
 var DataTypeEnum;
 (function (DataTypeEnum) {
-    DataTypeEnum["Unknown"] = "Unknown";
+    DataTypeEnum["Any"] = "Unknown";
     DataTypeEnum["String"] = "String";
     DataTypeEnum["Integer"] = "Integer";
     DataTypeEnum["Boolean"] = "Boolean";
@@ -178,21 +178,21 @@ SAMPLEDATA[DataTypeEnum.Date] = new Date();
 SAMPLEDATA[DataTypeEnum.Decimal] = 3.142;
 SAMPLEDATA[DataTypeEnum.Integer] = 7;
 SAMPLEDATA[DataTypeEnum.Enum] = "Enumeration";
-SAMPLEDATA[DataTypeEnum.Unknown] = undefined;
+SAMPLEDATA[DataTypeEnum.Any] = undefined;
 var DataPointBase = (function () {
     function DataPointBase(jsonObj) {
-        this.dataType = DataTypeEnum.Unknown;
+        this.dataType = DataTypeEnum.Any;
         for (var propName in jsonObj) {
             this[propName] = jsonObj[propName];
         }
-        this.label = this.label || this.token;
-        this.relativePath = this.relativePath || this.token;
+        this.label = this.label || this.name;
+        this.path = this.path || this.name;
         this.dataType = this.dataType !== undefined ? this.dataType : DataTypeEnum.Decimal;
-        this.definition = this.definition || "This is a " + this.token + " of type " + DataTypeEnum[this.dataType] + " with default value of " + this.mockValue;
+        this.doc = this.doc || "This is a " + this.name + " of type " + DataTypeEnum[this.dataType] + " with default value of " + this.mockValue;
     }
     DataPointBase.prototype.getFullPath = function (excludeRoot) {
         if (excludeRoot === void 0) { excludeRoot = false; }
-        var path = this.relativePath;
+        var path = this.path;
         var root = this.getParent();
         while (root) {
             path = root.parentName + "." + path;
@@ -219,7 +219,7 @@ var Output = (function (_super) {
         _this.getParent = function () {
             return parent;
         };
-        _this.token = tokenizeString(_this.token);
+        _this.name = tokenizeString(_this.name);
         _this.conditions = [];
         if (!!jsonObj.conditions) {
             jsonObj.conditions.forEach(function (condition) {
@@ -227,32 +227,35 @@ var Output = (function (_super) {
                 _this.addCondition(params);
             });
         }
-        if (_this.calculation) {
-            assert(replaceTokensWithPath(_this.calculation, _this.token, "bom." + _this.token) === _this.calculation, "Calculation cannot refer to itself for token \"" + _this.token + "\" with \"bom." + _this.token + "\":\nCalculation:\n=====================\n" + _this.calculation + "\n=====================\nReplaced:\n=====================\n" + replaceTokensWithPath(_this.calculation, _this.token, "bom." + _this.token) + "\"\n=====================", "RULE02");
+        if (_this.code) {
+            assert(replaceTokensWithPath(_this.code, _this.name, "bom." + _this.name) === _this.code, "Code cannot refer to itself for name \"" + _this.name + "\" with \"bom." + _this.name + "\":\nCode:\n=====================\n" + _this.code + "\n=====================\nReplaced:\n=====================\n" + replaceTokensWithPath(_this.code, _this.name, "bom." + _this.name) + "\"\n=====================", "RULE02");
+        }
+        else {
+            _this.code = "result = undefined";
         }
         return _this;
     }
     Output.prototype.addCondition = function (condition) {
         var outputCondition = new Condition(this.getParent(), condition);
-        outputCondition.token = "" + tokenizeString(outputCondition.token);
-        outputCondition.relativePath = "_conditions." + this.relativePath + "_" + (this.conditions.length + 1) + "_" + outputCondition.token;
+        outputCondition.name = "" + tokenizeString(outputCondition.name);
+        outputCondition.path = "_conditions." + this.path + "_" + (this.conditions.length + 1) + "_" + outputCondition.name;
         this.conditions.push(outputCondition);
         this.getParent().addOutput(outputCondition);
         return outputCondition;
     };
     Output.prototype.getRule = function () {
-        var calculation = this.calculation;
-        if (calculation.indexOf("result") === -1) {
-            calculation = "result = " + calculation;
+        var code = this.code;
+        if (code.indexOf("result") === -1) {
+            code = "result = " + code;
         }
         if (this.conditions.length > 0) {
             var conditions_1 = [];
             this.conditions.forEach(function (condition) {
-                conditions_1.push(condition.token);
+                conditions_1.push(condition.name);
             });
-            calculation = "if (" + conditions_1.join(" && ") + ") {" + calculation + "}";
+            code = "if (" + conditions_1.join(" && ") + ") {" + code + "}";
         }
-        return terser.minify(calculation, {
+        return terser.minify(code, {
             mangle: false,
             parse: {
                 bare_returns: true
@@ -269,10 +272,10 @@ var Output = (function (_super) {
             }
         }).code;
     };
-    Output.findOutput = function (outputs, token) {
+    Output.findOutput = function (outputs, name) {
         for (var _i = 0, outputs_1 = outputs; _i < outputs_1.length; _i++) {
             var output = outputs_1[_i];
-            if (output.token === token) {
+            if (output.name === name) {
                 return output;
             }
         }
@@ -283,7 +286,7 @@ var Output = (function (_super) {
         if (!!decisionObject && !!this.getParent()) {
             assert(this.inputMappings !== undefined, "Missing inputMappings for Decision Object " + decisionObject.name + " on output " + this.label, "OUTPUT01");
             if (decisionObject.decisionObjectType === DecisionObjectType.MultiAxisTable) {
-                decisionObject.parentName = this.relativePath.split(".")[this.relativePath.split(".").length - 1];
+                decisionObject.parentName = this.path.split(".")[this.path.split(".").length - 1];
                 decisionObject = new MultiAxisTable(this.getParent(), decisionObject);
             }
             else {
@@ -291,25 +294,25 @@ var Output = (function (_super) {
             }
             this.decisionObject = decisionObject;
             this.inputMappings = inputMappings;
-            decisionObject.parentName = this.relativePath;
+            decisionObject.parentName = this.path;
             decisionObject.inputs.forEach(function (input) {
-                var tokens = _this.inputMappings.filter(function (inputMapping) {
-                    return (inputMapping.To === input.token);
+                var namees = _this.inputMappings.filter(function (inputMapping) {
+                    return (inputMapping.To === input.name);
                 });
-                assert(tokens.length > 0, "No mapping found for input variable \"" + input.getFullPath() + "\" on rule set \"" + _this.getParent().name + "." + _this.label + "\"", "OUTPUT02");
+                assert(namees.length > 0, "No mapping found for input variable \"" + input.getFullPath() + "\" on rule set \"" + _this.getParent().name + "." + _this.label + "\"", "OUTPUT02");
             });
             this.inputMappings.forEach(function (mapping) {
                 var input = decisionObject.getInput(mapping.To);
                 var dataPoint = _this.getParent().getDataPoint(mapping.From);
-                var calculation = dataPoint ? dataPoint.getFullPath() : mapping.From;
+                var code = dataPoint ? dataPoint.getFullPath() : mapping.From;
                 var output = new Output(decisionObject, {
-                    token: input.token,
-                    calculation: calculation,
+                    name: input.name,
+                    code: code,
                     dataType: input.dataType,
-                    definition: input.definition,
+                    doc: input.doc,
                     mockValue: input.mockValue,
                     label: input.label,
-                    relativePath: input.relativePath,
+                    path: input.path,
                     ruleBehaviour: rulesengine_1.RuleBehaviour.Normal
                 });
                 decisionObject.addOutput(output);
@@ -345,29 +348,29 @@ var Condition = (function (_super) {
     }
     Condition.prototype.getRule = function () {
         if (this.conditionType === ConditionTypeEnum.Boolean) {
-            this.calculation = this.expression;
+            this.code = this.expression;
         }
         else if (this.conditionType === ConditionTypeEnum.LessThan) {
-            this.calculation = this.expression + " < " + this.number;
+            this.code = this.expression + " < " + this.number;
         }
         else if (this.conditionType === ConditionTypeEnum.LessThanOrEqualTo) {
-            this.calculation = this.expression + " <= " + this.number;
+            this.code = this.expression + " <= " + this.number;
         }
         else if (this.conditionType === ConditionTypeEnum.GreaterThan) {
-            this.calculation = this.expression + " > " + this.number;
+            this.code = this.expression + " > " + this.number;
         }
         else if (this.conditionType === ConditionTypeEnum.GreaterThanOrEqualTo) {
-            this.calculation = this.expression + " >= " + this.number;
+            this.code = this.expression + " >= " + this.number;
         }
         else if (this.conditionType === ConditionTypeEnum.Between) {
             var left = "<" + (this.includeFrom ? "=" : "");
             var right = "<" + (this.includeTo ? "=" : "");
-            this.calculation = this.from + " " + left + " " + this.expression + " " + right + " " + this.to;
+            this.code = this.from + " " + left + " " + this.expression + " " + right + " " + this.to;
         }
         else if (this.conditionType === ConditionTypeEnum.Outside) {
             var left = "<" + (this.includeFrom ? "=" : "");
             var right = ">" + (this.includeTo ? "=" : "");
-            this.calculation = "(" + this.expression + " " + left + " " + this.from + ") && (" + this.expression + " " + right + " " + this.to + ")";
+            this.code = "(" + this.expression + " " + left + " " + this.from + ") && (" + this.expression + " " + right + " " + this.to + ")";
         }
         return _super.prototype.getRule.call(this);
     };
@@ -412,20 +415,20 @@ var InputsOutputsManager = (function () {
         return undefined;
     };
     InputsOutputsManager.prototype.validateDataPoints = function () {
-        var tokens = this.getDataPoints()
+        var namees = this.getDataPoints()
             .map(function (dataPoint) {
-            return { count: 1, name: dataPoint.token };
+            return { count: 1, name: dataPoint.name };
         })
             .reduce(function (accumulator, currentValue) {
             accumulator[currentValue.name] = (accumulator[currentValue.name] || 0) + currentValue.count;
             return accumulator;
         }, {});
-        var duplicateTokens = Object.keys(tokens).filter(function (a) { return tokens[a] > 1; });
+        var duplicateTokens = Object.keys(namees).filter(function (a) { return namees[a] > 1; });
         if (duplicateTokens.length !== 0) {
             rulesengine_1.jlog(this.outputs);
             rulesengine_1.jlog(this.inputs);
         }
-        assert(duplicateTokens.length === 0, "Following token(s) are duplicated: '" + duplicateTokens.join("', '") + "' in BOM of '" + this.name + "'", "DO01");
+        assert(duplicateTokens.length === 0, "Following name(es) are duplicated: '" + duplicateTokens.join("', '") + "' in BOM of '" + this.name + "'", "DO01");
         var names = this.getDataPoints()
             .map(function (dataPoint) {
             return { count: 1, name: dataPoint.label };
@@ -438,7 +441,7 @@ var InputsOutputsManager = (function () {
         assert(duplicateTokens.length === 0, "Following name(s) are duplicated: '" + duplicateNames.join("', '") + "' in BOM of '" + this.name + "'", "DO02");
         var paths = this.getDataPoints()
             .map(function (dataPoint) {
-            return { count: 1, name: dataPoint.relativePath };
+            return { count: 1, name: dataPoint.path };
         })
             .reduce(function (accumulator, currentValue) {
             accumulator[currentValue.name] = (accumulator[currentValue.name] || 0) + currentValue.count;
@@ -475,29 +478,29 @@ var InputsOutputsManager = (function () {
         };
         this.inputs.forEach(function (input, index) {
             var sampleData = evaluateMockValue(input);
-            var data = addAnnotation ? { sampleData: input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")], documentation: input.definition, dataType: DataTypeEnum[input.dataType.replace("Type", "")] } : input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")];
-            bom_1.addToBom(bom, "" + input.relativePath, data);
+            var data = addAnnotation ? { sampleData: input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")], documentation: input.doc, dataType: DataTypeEnum[input.dataType.replace("Type", "")] } : input.mockValue ? sampleData : SAMPLEDATA[input.dataType.replace("Type", "")];
+            bom_1.addToBom(bom, "" + input.path, data);
         });
         if (includeOutputs) {
             this.outputs.forEach(function (output, index) {
                 if (output.hasDecisionObject()) {
                     var dObject = output.getDecisionObject();
                     if (dObject.decisionObjectType === DecisionObjectType.MultiAxisTable) {
-                        var root_1 = output.relativePath.split(".")[0];
+                        var root_1 = output.path.split(".")[0];
                         var subBom = dObject.generateSampleBOM(includeOutputs, addAnnotation)[root_1];
-                        getAllPaths(output.token, subBom).forEach(function (path) {
+                        getAllPaths(output.name, subBom).forEach(function (path) {
                             var fullPath = root_1 + "." + path.path.split(".").splice(1).join(".");
                             bom_1.addToBom(bom, fullPath, path.value);
                         });
                     }
                     else {
-                        bom_1.addToBom(bom, "" + output.relativePath, dObject.generateSampleBOM(includeOutputs, addAnnotation));
+                        bom_1.addToBom(bom, "" + output.path, dObject.generateSampleBOM(includeOutputs, addAnnotation));
                     }
                 }
-                else if (output.token.indexOf("DecisionTable_") === -1) {
+                else if (output.name.indexOf("DecisionTable_") === -1) {
                     var sampleData = evaluateMockValue(output);
-                    var data = addAnnotation ? { sampleData: sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")], documentation: output.definition, dataType: DataTypeEnum[output.dataType.replace("Type", "")] } : sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")];
-                    bom_1.addToBom(bom, output.relativePath, data);
+                    var data = addAnnotation ? { sampleData: sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")], documentation: output.doc, dataType: DataTypeEnum[output.dataType.replace("Type", "")] } : sampleData ? sampleData : SAMPLEDATA[output.dataType.replace("Type", "")];
+                    bom_1.addToBom(bom, output.path, data);
                 }
             });
         }
@@ -507,28 +510,28 @@ var InputsOutputsManager = (function () {
     InputsOutputsManager.prototype.schemaVersion = function () {
         var hash = "";
         this.getDataPoints().forEach(function (datapoint) {
-            hash += datapoint.relativePath + ":" + datapoint.dataType;
+            hash += datapoint.path + ":" + datapoint.dataType;
         });
         return ts_md5_1.Md5.hashStr(hash).toString();
     };
-    InputsOutputsManager.prototype.getInput = function (token) {
+    InputsOutputsManager.prototype.getInput = function (name) {
         return this.inputs.filter(function (input) {
-            return (input.token === token);
+            return (input.name === name);
         })[0];
     };
-    InputsOutputsManager.prototype.getOutput = function (token) {
+    InputsOutputsManager.prototype.getOutput = function (name) {
         return this.outputs.filter(function (output) {
-            return (output.token === token);
+            return (output.name === name);
         })[0];
     };
-    InputsOutputsManager.prototype.getDataPoint = function (token) {
+    InputsOutputsManager.prototype.getDataPoint = function (name) {
         return this.getDataPoints().filter(function (dataPoint) {
-            return (dataPoint.token === token);
+            return (dataPoint.name === name);
         })[0];
     };
     InputsOutputsManager.prototype.addInput = function (input) {
         this.inputs.forEach(function (iInput) {
-            assert(iInput.token !== input.token, "There's already an input with token " + input.token + "\"", "INPUT01");
+            assert(iInput.name !== input.name, "There's already an input with name " + input.name + "\"", "INPUT01");
         });
         if (input instanceof Input) {
             this.inputs.push(input);
@@ -542,7 +545,7 @@ var InputsOutputsManager = (function () {
     };
     InputsOutputsManager.prototype.addOutput = function (output) {
         this.outputs.forEach(function (iOutput) {
-            assert(iOutput.token !== output.token, "There's already an output with token " + output.token + "\"", "OUTPUT04");
+            assert(iOutput.name !== output.name, "There's already an output with name " + output.name + "\"", "OUTPUT04");
         });
         if (output instanceof Output) {
             this.outputs.push(output);
@@ -623,7 +626,7 @@ var InputBuilder = (function () {
     InputBuilder.prototype.remove = function () {
         var _this = this;
         this.decisionObjectBuilder.decisionObject.inputs = this.decisionObjectBuilder.decisionObject.inputs.filter(function (input) {
-            return input.token !== _this.input.token;
+            return input.name !== _this.input.name;
         });
         return this.decisionObjectBuilder;
     };
@@ -639,19 +642,19 @@ var OutputBuilder = (function (_super) {
     }
     OutputBuilder.prototype.using = function (calculator) {
         if (typeof calculator === "string") {
-            this.usingCalculation(calculator);
+            this.usingCode(calculator);
         }
         else {
             this.usingDecisionObject(calculator);
         }
         return this;
     };
-    OutputBuilder.prototype.usingCalculation = function (calculation) {
-        this.output.calculation = calculation;
+    OutputBuilder.prototype.usingCode = function (code) {
+        this.output.code = code;
         return this;
     };
-    OutputBuilder.prototype.withCalculation = function (calculation) {
-        return this.usingCalculation(calculation);
+    OutputBuilder.prototype.withCode = function (code) {
+        return this.usingCode(code);
     };
     OutputBuilder.prototype.usingDecisionObject = function (decisionObject) {
         this.output.decisionObject = decisionObject;
@@ -671,7 +674,7 @@ var OutputBuilder = (function (_super) {
             expression: expression,
             conditionType: ConditionTypeEnum.Boolean,
             label: withLabel,
-            token: !!withLabel ? tokenizeString(withLabel) : tokenizeString(expression) + "IsTrue"
+            name: !!withLabel ? tokenizeString(withLabel) : tokenizeString(expression) + "IsTrue"
         });
         this.output.addCondition(condition);
         return this;
@@ -688,22 +691,22 @@ var DecisionObjectBuilder = (function () {
     DecisionObjectBuilder.prototype.withInput = function (input) {
         if (typeof input === "string") {
             var path = input.split(".");
-            var token = path[path.length - 1];
-            input = this.decisionObject.getInput(token) || this.decisionObject.addInput({ token: token, relativePath: input });
+            var name_1 = path[path.length - 1];
+            input = this.decisionObject.getInput(name_1) || this.decisionObject.addInput({ name: name_1, path: input });
         }
         else {
-            input = this.decisionObject.getInput(input.token) || this.decisionObject.addInput(input);
+            input = this.decisionObject.getInput(input.name) || this.decisionObject.addInput(input);
         }
         return new InputBuilder(input, this);
     };
     DecisionObjectBuilder.prototype.withOutput = function (output) {
         if (typeof output === "string") {
             var path = output.split(".");
-            var token = path[path.length - 1];
-            output = this.decisionObject.getOutput(token) || this.decisionObject.addOutput({ token: token, relativePath: output });
+            var name_2 = path[path.length - 1];
+            output = this.decisionObject.getOutput(name_2) || this.decisionObject.addOutput({ name: name_2, path: output });
         }
         else {
-            output = this.decisionObject.getOutput(output.token) || this.decisionObject.addOutput(output);
+            output = this.decisionObject.getOutput(output.name) || this.decisionObject.addOutput(output);
         }
         return new OutputBuilder(output, this);
     };
@@ -732,10 +735,12 @@ var DecisionObject = (function (_super) {
             _this.inputs[index] = new Input(_this, input);
         });
         _this.outputs = [];
-        jsonObj.outputs.forEach(function (output, index) {
-            var newOutput = new Output(_this, output);
-            _this.addOutput(newOutput);
-        });
+        if (!!jsonObj.outputs) {
+            jsonObj.outputs.forEach(function (output, index) {
+                var newOutput = new Output(_this, output);
+                _this.addOutput(newOutput);
+            });
+        }
         if (jsonObj.decisionObjectType === DecisionObjectType.RuleSet) {
             _this.validateDataPoints();
         }
@@ -747,7 +752,7 @@ var DecisionObject = (function (_super) {
     }
     DecisionObject.prototype.getInputNames = function () {
         return this.inputs.map(function (input) {
-            return input.relativePath;
+            return input.path;
         });
     };
     DecisionObject.setupSubDecisionObjects = function (decisionObject) {
@@ -768,8 +773,8 @@ var DecisionObject = (function (_super) {
     DecisionObject.prototype.generateReadableRules = function () {
         var rules = [];
         this.outputs.forEach(function (output) {
-            var conditions = output.conditions.map(function (condition) { return condition.token; }).join(" and ");
-            rules.push("" + output.label + (output.label !== output.token ? "known as " + output.token + " " : "") + " is defined as " + output.calculation + (output.relativePath !== output.token ? "It will be saved under " + output.relativePath : "") +
+            var conditions = output.conditions.map(function (condition) { return condition.name; }).join(" and ");
+            rules.push("" + output.label + (output.label !== output.name ? "known as " + output.name + " " : "") + " is defined as " + output.code + (output.path !== output.name ? "It will be saved under " + output.path : "") +
                 (conditions ? " when " + conditions + " is true." : "."));
         });
         return rules;
@@ -806,27 +811,27 @@ var DecisionObject = (function (_super) {
                     });
                 });
                 var rule = {
-                    name: output.relativePath,
+                    name: output.path,
                     code: "//Sub Rules",
                     behaviour: rulesengine_1.RuleBehaviour.Never
                 };
-                assert(rule.name, "Rule doesn't have a name using '" + output.relativePath + "'", "RULE03");
+                assert(rule.name, "Rule doesn't have a name using '" + output.path + "'", "RULE03");
                 rules.rules.push(rule);
             }
             else {
                 var rule = {
-                    name: output.relativePath,
+                    name: output.path,
                     code: output.getRule(),
                     behaviour: output.ruleBehaviour
                 };
-                assert(rule.name, "Rule doesn't have a name using '" + output.relativePath + "'", "RULE03");
+                assert(rule.name, "Rule doesn't have a name using '" + output.path + "'", "RULE03");
                 rules.rules.push(rule);
             }
         });
         if (!this.getParent()) {
             rules.rules.forEach(function (rule) {
                 _this.getDataPoints().forEach(function (dataPoint) {
-                    rule.code = replaceTokensWithPath(rule.code, dataPoint.token, "" + dataPoint.getFullPath());
+                    rule.code = replaceTokensWithPath(rule.code, dataPoint.name, "" + dataPoint.getFullPath());
                 });
             });
             var usedVariables_1 = {};
@@ -880,32 +885,32 @@ var MultiAxisTable = (function (_super) {
             this.purpose = tokenizeString(this.purpose);
         }
         this.decisionObjectType = DecisionObjectType.MultiAxisTable;
-        var cellCalculation = this.generateCellCalculation();
-        var globalCalculation = "\n        \n        result = (function() {\n        " + cellCalculation + "\n        return result;\n        })()";
+        var cellCode = this.generateCellCode();
+        var globalCode = "\n        \n        result = (function() {\n        " + cellCode + "\n        return result;\n        })()";
         var purpose = this.purpose || "";
         var outputBase = new Output(this, {
-            calculation: "" + globalCalculation,
-            token: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            code: "" + globalCode,
+            name: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             dataType: DataTypeEnum.Object,
-            relativePath: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            path: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             decisionObject: undefined,
             rawValue: false,
             inputMappings: [],
             conditions: [],
-            definition: "",
+            doc: "",
             mockValue: undefined,
             label: "Table",
             ruleBehaviour: rulesengine_1.RuleBehaviour.Normal
         });
         this.outputs.forEach(function (output) {
-            if (output.token.indexOf("DecisionTable_") === -1) {
-                output.calculation = "result = " + outputBase.token + "." + output.token;
+            if (output.name.indexOf("DecisionTable_") === -1) {
+                output.code = "result = " + outputBase.name + "." + output.name;
             }
         });
         var decisionTableOutput = new Output(this, outputBase);
         this.addOutput(decisionTableOutput);
     };
-    MultiAxisTable.prototype.generateCellCalculation = function () {
+    MultiAxisTable.prototype.generateCellCode = function () {
         var _this = this;
         var code = "var result = {};\n        var evaluate = function(value) {\n            var r1_ = value && (value.call || value) && (value.call && value.call());\n            return r1_ === undefined ? value : r1_;\n        }\n        ";
         this.columns.forEach(function (column, index) {
@@ -927,30 +932,30 @@ var MultiAxisTable = (function (_super) {
             assert(_this.columns[cell.columnNumber - 1], "There isn't a column with index " + cell.columnNumber, "CELL02");
             code += "\n            if (row" + (cell.rowNumber - 1) + "Condition && column" + (cell.columnNumber - 1) + "Condition) {\n            result.Match = {Column: {Index: " + (cell.columnNumber - 1) + ", Name: \"" + _this.columns[cell.columnNumber - 1].name + "\"}, Row: {Index: " + (cell.rowNumber - 1) + ", Name: \"" + _this.rows[cell.rowNumber - 1].name + "\"}};\n            ";
             _this.outputs.forEach(function (output, outputIndex) {
-                var cellOutput = cell.outputs.filter(function (cellOutput) { return cellOutput.token === output.token; })[0];
-                var cellValue = cellOutput ? functionize(cellOutput.calculation, true, cellOutput.rawValue) : "void 0";
-                code += "\n                var cell" + output.token + " = " + cellValue + ";\n                cell" + output.token + " = evaluate(" + cellValue + ");\n                ";
+                var cellOutput = cell.outputs.filter(function (cellOutput) { return cellOutput.name === output.name; })[0];
+                var cellValue = cellOutput ? functionize(cellOutput.code, true, cellOutput.rawValue) : "void 0";
+                code += "\n                var cell" + output.name + " = " + cellValue + ";\n                cell" + output.name + " = evaluate(" + cellValue + ");\n                ";
             });
             _this.rows[cell.rowNumber - 1].outputs.forEach(function (output, outputIndex) {
-                var columnFn = functionize(output.calculation, true, output.rawValue);
-                code += "\n                if (cell" + output.token + " === void 0) {\n                    var column = " + columnFn + ";\n                    cell" + output.token + " = evaluate(column);                    \n                }\n                ";
+                var columnFn = functionize(output.code, true, output.rawValue);
+                code += "\n                if (cell" + output.name + " === void 0) {\n                    var column = " + columnFn + ";\n                    cell" + output.name + " = evaluate(column);                    \n                }\n                ";
             });
             _this.columns[cell.columnNumber - 1].outputs.forEach(function (output, outputIndex) {
-                var columnFn = functionize(output.calculation, true, output.rawValue);
-                code += "\n                if (cell" + output.token + " === void 0) {\n                    var column = " + columnFn + ";\n                    cell" + output.token + " = evaluate(column);                    \n                }\n                ";
+                var columnFn = functionize(output.code, true, output.rawValue);
+                code += "\n                if (cell" + output.name + " === void 0) {\n                    var column = " + columnFn + ";\n                    cell" + output.name + " = evaluate(column);                    \n                }\n                ";
             });
             _this.outputs.forEach(function (output) {
-                var tableFn = functionize(output.calculation, true, output.rawValue);
-                code += "\n                if (cell" + output.token + " === void 0) {\n                    //raw=" + output.rawValue + "\n                    var table = " + tableFn + ";\n                    cell" + output.token + " = evaluate(table);\n                }\n                result[\"" + output.token + "\"] = cell" + output.token + ";\n                ";
+                var tableFn = functionize(output.code, true, output.rawValue);
+                code += "\n                if (cell" + output.name + " === void 0) {\n                    //raw=" + output.rawValue + "\n                    var table = " + tableFn + ";\n                    cell" + output.name + " = evaluate(table);\n                }\n                result[\"" + output.name + "\"] = cell" + output.name + ";\n                ";
             });
             code += "} else \n            ";
         });
         code += " {\n            ";
         this.outputs.forEach(function (output) {
-            var tableFn = functionize(output.calculation, true, output.rawValue);
-            code += "\n                result.Match = {NoMatch: true};\n                var table" + output.token + " = " + tableFn + ";\n                result[\"" + output.token + "\"] = evaluate(table" + output.token + ");\n                ";
+            var tableFn = functionize(output.code, true, output.rawValue);
+            code += "\n                result.Match = {NoMatch: true};\n                var table" + output.name + " = " + tableFn + ";\n                result[\"" + output.name + "\"] = evaluate(table" + output.name + ");\n                ";
         });
-        code += "}\n        result.TableName = \"" + ((this.name && this.name.replace(/"/g, '\"')) || "Unknown") + "\";\n        result.Purpose = \"" + ((this.purpose && this.purpose.replace(/"/g, '\"')) || "Unknown") + "\";\n        ";
+        code += "}\n        result.TableName = \"" + ((this.name && this.name.replace(/"/g, '\"')) || "Any") + "\";\n        result.Purpose = \"" + ((this.purpose && this.purpose.replace(/"/g, '\"')) || "Any") + "\";\n        ";
         return code;
     };
     return MultiAxisTable;
@@ -965,8 +970,8 @@ var SingleAxisTable = (function (_super) {
         var _this = this;
         var conditions = this.inputs.map(function (input) {
             return new Condition(undefined, {
-                token: input.token,
-                label: input.token,
+                name: input.name,
+                label: input.name,
                 conditionType: ConditionTypeEnum.Boolean,
                 expression: input.dataType === DataTypeEnum.Enum ? _this.ruleContext.getEnumerationSet(input.enumerationSet).values[0].value : undefined
             });
@@ -974,7 +979,7 @@ var SingleAxisTable = (function (_super) {
         var outputs = this.outputs.map(function (output) {
             var newOutuput = new Output(undefined, output);
             if (output.dataType === DataTypeEnum.Enum) {
-                output.calculation = "\"" + _this.ruleContext.getEnumerationSet(output.enumerationSet).values[0].value + "\"";
+                output.code = "\"" + _this.ruleContext.getEnumerationSet(output.enumerationSet).values[0].value + "\"";
             }
             return newOutuput;
         });
@@ -996,35 +1001,35 @@ var SingleAxisTable = (function (_super) {
         this.entries.forEach(function (entry, entryIndex) {
             assert(((entry.conditions.length === _this.inputs.length)), "Not enough conditions for entry #" + entryIndex + ", need " + _this.inputs.length, "ENTRY01");
             _this.inputs.forEach(function (input) {
-                assert(((entry.conditions.filter(function (condition) { return condition.token === input.token; }).length > 0)), "Missing the condition for " + input.token + " on entry #" + entryIndex, "ENTRY01");
+                assert(((entry.conditions.filter(function (condition) { return condition.name === input.name; }).length > 0)), "Missing the condition for " + input.name + " on entry #" + entryIndex, "ENTRY01");
             });
             _this.outputs.forEach(function (output) {
-                assert((entry.outputs.length === _this.outputs.length) && (entry.outputs.filter(function (entryOutput) { return output.token === entryOutput.token; }).length > 0), "Missing an output \"" + output.token + "\" for entry #" + entryIndex, "ENTRY02");
+                assert((entry.outputs.length === _this.outputs.length) && (entry.outputs.filter(function (entryOutput) { return output.name === entryOutput.name; }).length > 0), "Missing an output \"" + output.name + "\" for entry #" + entryIndex, "ENTRY02");
             });
         });
         this.outputs.forEach(function (output) {
-            output.calculation = "";
+            output.code = "";
         });
-        var tableCalculation = this.generateTableCode();
-        var globalCalculation = "\n        result = (function() {\n        " + tableCalculation + "\n        return result;\n        })()";
+        var tableCode = this.generateTableCode();
+        var globalCode = "\n        result = (function() {\n        " + tableCode + "\n        return result;\n        })()";
         var purpose = this.purpose || "";
         var outputBase = new Output(this, {
-            calculation: "" + globalCalculation,
-            token: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            code: "" + globalCode,
+            name: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             dataType: DataTypeEnum.Object,
-            relativePath: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
+            path: "DecisionTable_" + (purpose ? tokenizeString(purpose) : ""),
             decisionObject: undefined,
             rawValue: false,
             inputMappings: [],
             conditions: [],
-            definition: "",
+            doc: "",
             mockValue: undefined,
             label: "Table",
             ruleBehaviour: rulesengine_1.RuleBehaviour.Normal
         });
         this.outputs.forEach(function (output) {
-            if (output.token.indexOf("DecisionTable_") === -1) {
-                output.calculation = "result = " + outputBase.token + "." + output.token;
+            if (output.name.indexOf("DecisionTable_") === -1) {
+                output.code = "result = " + outputBase.name + "." + output.name;
             }
         });
         var decisionTableOutput = new Output(this, outputBase);
@@ -1033,9 +1038,9 @@ var SingleAxisTable = (function (_super) {
     SingleAxisTable.prototype.generateTableCode = function () {
         return "var result = {\"TableName\": \"" + this.name + "\"};\n        " + this.entries.map(function (entry, index) {
             return "if (" + entry.conditions.map(function (condition) {
-                return condition.token + " === " + condition.expression;
+                return condition.name + " === " + condition.expression;
             }).join(" && ") + ") {\n                " + entry.outputs.map(function (output) {
-                return "result['" + output.token + "'] = " + functionize(output.calculation, true) + "();";
+                return "result['" + output.name + "'] = " + functionize(output.code, true) + "();";
             }).join("\n") + "\n                result[\"Match\"] = {\"Name\": \"" + entry.name + "\", \"Index\": " + index + "};\n            }";
         }).join("\n");
     };
