@@ -45,7 +45,7 @@
     "natural": "^0.6.3",
     "node-minify": "^3.6.0",
     "reflect-metadata": "^0.1.13",
-    "swagger-ui": "^3.22.1",
+    "swagger-ui": "^3.23.11",
     "swagger-ui-express": "^4.0.2",
     "tag-cloud": "^1.2.0",
     "ts-md5": "^1.2.4",
